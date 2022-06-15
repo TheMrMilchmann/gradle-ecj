@@ -1,0 +1,12 @@
+[versions]
+plugin-publish = "0.20.0"
+spock = "2.0-groovy-3.0"
+
+[libraries]
+# org.spockframework - Spock
+spock-bom = { module = "org.spockframework:spock-bom", version.ref = "spock" }
+spock-core = { module = "org.spockframework:spock-core", version.ref = "spock" }
+
+[plugins]
+# com.gradle.plugin-publish - plugin-publish
+plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }
