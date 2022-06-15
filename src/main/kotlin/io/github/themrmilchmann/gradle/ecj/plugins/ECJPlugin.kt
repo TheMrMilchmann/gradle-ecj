@@ -23,6 +23,7 @@ package io.github.themrmilchmann.gradle.ecj.plugins
 
 import io.github.themrmilchmann.gradle.ecj.internal.utils.*
 import org.gradle.api.*
+import org.gradle.api.file.*
 import org.gradle.api.plugins.*
 import org.gradle.api.tasks.compile.*
 import org.gradle.jvm.toolchain.*
@@ -57,11 +58,21 @@ public class ECJPlugin : Plugin<Project> {
         val javaToolchains = extensions.getByType<JavaToolchainService>()
 
         tasks.withType<JavaCompile> {
-            options.bootstrapClasspath = ecjConfiguration
+            javaCompiler.set(null as JavaCompiler?)
+            javaCompiler.finalizeValue()
 
-            options.isFork = true
-            options.forkOptions.executable = (javaToolchains.launcherFor(java.toolchain).orNull ?: TODO()).executablePath.asFile.absolutePath
-            options.forkOptions.jvmArgs = listOf(MAIN)
+            options.headerOutputDirectory.convention(null as Directory?)
+            options.headerOutputDirectory.set(null as Directory?)
+            options.headerOutputDirectory.finalizeValue()
+
+            afterEvaluate {
+                options.isFork = true
+                options.forkOptions.executable = (javaToolchains.launcherFor(java.toolchain).orNull ?: TODO()).executablePath.asFile.absolutePath
+                options.forkOptions.jvmArgs = listOf(
+                    "-cp", ecjConfiguration.asPath,
+                    MAIN
+                )
+            }
         }
     }
 
