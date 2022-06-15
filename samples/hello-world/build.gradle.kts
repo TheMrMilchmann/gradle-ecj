@@ -31,3 +31,7 @@ java {
         languageVersion.set(JavaLanguageVersion.of(11))
     }
 }
+
+repositories {
+    mavenCentral()
+}
