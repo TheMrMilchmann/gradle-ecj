@@ -1,0 +1,50 @@
+name: CI
+on: push
+
+jobs:
+  build:
+    name: OpenJDK 18 (Ubuntu)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - uses: AdoptOpenJDK/install-jdk@v1
+        with:
+          version: '18'
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Gradle Build
+        run: |
+          ./gradlew --version --console=plain
+          ./gradlew build -Psnapshot --info -S --console=plain
+
+      - name: Cleanup Gradle Cache
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
+
+  samples:
+    name: Configure Samples
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: AdoptOpenJDK/install-jdk@v1
+        with:
+          version: '18'
+
+      - name: Gradle Publish (Dry-Run)
+        run: find samples/ -mindepth 1 -maxdepth 1 -type d -print0 | xargs -0 -n1 bash -c 'cd "$0" && echo $PWD && ./gradlew publish --dry-run --include-build ../../'
