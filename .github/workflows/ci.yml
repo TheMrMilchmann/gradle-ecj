@@ -36,7 +36,7 @@ jobs:
           rm -f ~/.gradle/caches/modules-2/gc.properties
 
   samples:
-    name: Configure Samples
+    name: Build Samples
     needs: [build]
     runs-on: ubuntu-latest
     steps:
@@ -47,4 +47,4 @@ jobs:
           version: '18'
 
       - name: Gradle Publish (Dry-Run)
-        run: find samples/ -mindepth 1 -maxdepth 1 -type d -print0 | xargs -0 -n1 bash -c 'cd "$0" && echo $PWD && ./gradlew publish --dry-run --include-build ../../'
+        run: find samples/ -mindepth 1 -maxdepth 1 -type d -print0 | xargs -0 -n1 bash -c 'cd "$0" && echo $PWD && ./gradlew build --include-build ../../'
