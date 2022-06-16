@@ -8,7 +8,7 @@
 
 A Gradle plugin for using the Eclipse Compiler for Java (ECJ) for compiling Java files.
 
-This plugin is loosely based on the work by [Niklas Walter](https://github.com/TwoStone/gradle-eclipse-compiler-plugin).
+This plugin is loosely based on [Niklas Walter's Gradle Eclipse Compiler for Java Plugin](https://github.com/TwoStone/gradle-eclipse-compiler-plugin).
 
 
 ## Usage
