@@ -91,7 +91,7 @@ publishing {
         }
     }
     publications.withType<MavenPublication> {
-        if (name == "ecjPublishPluginMarkerMaven") {
+        if (name == "ecjPluginMarkerMaven") {
             artifact(emptyJar)
             artifact(emptyJar) { classifier = "javadoc" }
             artifact(emptyJar) { classifier = "sources" }
