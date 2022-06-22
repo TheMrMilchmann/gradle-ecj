@@ -24,7 +24,6 @@ package io.github.themrmilchmann.gradle.ecj.plugins
 import io.github.themrmilchmann.gradle.ecj.ECJExtension
 import io.github.themrmilchmann.gradle.ecj.internal.utils.*
 import org.gradle.api.*
-import org.gradle.api.file.*
 import org.gradle.api.plugins.*
 import org.gradle.api.tasks.compile.*
 import org.gradle.jvm.toolchain.*
@@ -53,8 +52,8 @@ public class ECJPlugin : Plugin<Project> {
     @OptIn(ExperimentalStdlibApi::class)
     override fun apply(target: Project): Unit = applyTo(target) project@{
         /*
-         * Make sure that the JavaPlugin is applied before this plugin, since we have to override some property
-         * conventions. (Configuration happens in the same order in which the configuration actions are added.)
+         * Make sure that the JavaPlugin is applied before this plugin, since we have to override some properties.
+         * (Configuration happens in the same order in which the configuration actions are added.)
          */
         pluginManager.apply(JavaPlugin::class)
 
@@ -77,14 +76,12 @@ public class ECJPlugin : Plugin<Project> {
 
         tasks.withType<JavaCompile> {
             /* Overwrite the javaCompiler to make sure that it is not inferred from the toolchain. */
-            javaCompiler.convention(this@project.provider { null })
+            javaCompiler.set(this@project.provider { null })
+
+            /* ECJ does not support generating JNI headers. Make sure the property is not used. */
+            options.headerOutputDirectory.set(this@project.provider { null })
 
             afterEvaluate {
-                /* ECJ does not support generating JNI headers. Make sure the property is not used. */
-                options.headerOutputDirectory.convention(null as Directory?)
-                options.headerOutputDirectory.set(null as Directory?)
-                options.headerOutputDirectory.finalizeValue()
-
                 val javaLauncher = if (java.toolchain.languageVersion.orNull?.canCompileOrRun(REQUIRED_JAVA_VERSION) == true) {
                     javaToolchains.launcherFor(java.toolchain).orNull ?: error("Could not get launcher for toolchain: ${java.toolchain}")
                 } else {
