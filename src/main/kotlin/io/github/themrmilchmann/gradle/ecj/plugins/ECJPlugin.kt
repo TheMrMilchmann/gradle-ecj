@@ -21,6 +21,7 @@
  */
 package io.github.themrmilchmann.gradle.ecj.plugins
 
+import io.github.themrmilchmann.gradle.ecj.ECJExtension
 import io.github.themrmilchmann.gradle.ecj.internal.utils.*
 import org.gradle.api.*
 import org.gradle.api.file.*
@@ -31,7 +32,7 @@ import org.gradle.kotlin.dsl.*
 
 public class ECJPlugin : Plugin<Project> {
 
-    private companion object {
+    internal companion object {
 
         const val ECJ_CONFIGURATION_NAME = "ecj"
 
@@ -57,10 +58,16 @@ public class ECJPlugin : Plugin<Project> {
          */
         pluginManager.apply(JavaPlugin::class)
 
+        val ecjExtension = extensions.create<ECJExtension>("ecj")
+
         val ecjConfiguration = configurations.create(ECJ_CONFIGURATION_NAME) {
             defaultDependencies {
+                val compilerGroupId = ecjExtension.compilerGroupId.orNull ?: error("ECJ compilerGroupId may not be null")
+                val compilerArtifactId = ecjExtension.compilerArtifactId.orNull ?: error("ECJ compilerArtifactId may not be null")
+                val compilerVersion = ecjExtension.compilerVersion.orNull ?: error("ECJ compilerVersion may not be null")
+
                 dependencies {
-                    add(create(group = DEFAULT_DEPENDENCY_GROUP, name = DEFAULT_DEPENDENCY_ARTIFACT, version = DEFAULT_DEPENDENCY_VERSION))
+                    add(create(group = compilerGroupId, name = compilerArtifactId, version = compilerVersion))
                 }
             }
         }
