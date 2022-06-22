@@ -79,12 +79,12 @@ public class ECJPlugin : Plugin<Project> {
             /* Overwrite the javaCompiler to make sure that it is not inferred from the toolchain. */
             javaCompiler.convention(this@project.provider { null })
 
-            /* ECJ does not support generating JNI headers. Make sure the property is not used. */
-            options.headerOutputDirectory.convention(null as Directory?)
-            options.headerOutputDirectory.set(null as Directory?)
-            options.headerOutputDirectory.finalizeValue()
-
             afterEvaluate {
+                /* ECJ does not support generating JNI headers. Make sure the property is not used. */
+                options.headerOutputDirectory.convention(null as Directory?)
+                options.headerOutputDirectory.set(null as Directory?)
+                options.headerOutputDirectory.finalizeValue()
+
                 val javaLauncher = if (java.toolchain.languageVersion.orNull?.canCompileOrRun(REQUIRED_JAVA_VERSION) == true) {
                     javaToolchains.launcherFor(java.toolchain).orNull ?: error("Could not get launcher for toolchain: ${java.toolchain}")
                 } else {
