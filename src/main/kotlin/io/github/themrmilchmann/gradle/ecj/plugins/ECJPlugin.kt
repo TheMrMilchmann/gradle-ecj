@@ -62,8 +62,7 @@ public class ECJPlugin : Plugin<Project> {
         val javaToolchains = extensions.getByType<JavaToolchainService>()
 
         tasks.withType<JavaCompile> {
-            javaCompiler.set(null as JavaCompiler?)
-            javaCompiler.finalizeValue()
+            javaCompiler.convention(this@project.provider { null })
 
             options.headerOutputDirectory.convention(null as Directory?)
             options.headerOutputDirectory.set(null as Directory?)
