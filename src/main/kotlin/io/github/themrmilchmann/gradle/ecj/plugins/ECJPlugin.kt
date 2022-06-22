@@ -41,6 +41,12 @@ public class ECJPlugin : Plugin<Project> {
 
         const val MAIN = "org.eclipse.jdt.internal.compiler.batch.Main"
 
+        /* The version for which a toolchain is requested if the project's toolchain is not compatible. */
+        const val PREFERRED_JAVA_VERSION = 17
+
+        /* The version required to run ECJ. */
+        const val REQUIRED_JAVA_VERSION = 11
+
     }
 
     override fun apply(target: Project): Unit = applyTo(target) project@{
@@ -62,14 +68,22 @@ public class ECJPlugin : Plugin<Project> {
         val javaToolchains = extensions.getByType<JavaToolchainService>()
 
         tasks.withType<JavaCompile> {
+            /* Overwrite the javaCompiler to make sure that it is not inferred from the toolchain. */
             javaCompiler.convention(this@project.provider { null })
 
+            /* ECJ does not support generating JNI headers. Make sure the property is not used. */
             options.headerOutputDirectory.convention(null as Directory?)
             options.headerOutputDirectory.set(null as Directory?)
             options.headerOutputDirectory.finalizeValue()
 
             afterEvaluate {
-                val javaLauncher = javaToolchains.launcherFor(java.toolchain).orNull ?: javaToolchains.launcherFor(java.toolchain { languageVersion.set(JavaLanguageVersion.of(11)) }).orNull ?: TODO()
+                val toolchain = if (java.toolchain.languageVersion.orNull?.canCompileOrRun(REQUIRED_JAVA_VERSION) == true) {
+                    java.toolchain
+                } else {
+                    java.toolchain { languageVersion.set(JavaLanguageVersion.of(PREFERRED_JAVA_VERSION)) }
+                }
+
+                val javaLauncher = javaToolchains.launcherFor(toolchain).orNull ?: error("Could not get launcher for toolchain: $toolchain")
 
                 options.isFork = true
                 options.forkOptions.executable = javaLauncher.executablePath.asFile.absolutePath
