@@ -49,6 +49,7 @@ public class ECJPlugin : Plugin<Project> {
 
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     override fun apply(target: Project): Unit = applyTo(target) project@{
         /*
          * Make sure that the JavaPlugin is applied before this plugin, since we have to override some property
@@ -87,10 +88,15 @@ public class ECJPlugin : Plugin<Project> {
 
                 options.isFork = true
                 options.forkOptions.executable = javaLauncher.executablePath.asFile.absolutePath
-                options.forkOptions.jvmArgs = listOf(
-                    "-cp", ecjConfiguration.asPath,
-                    MAIN
-                )
+
+                val prevJvmArgs = options.forkOptions.jvmArgs
+                options.forkOptions.jvmArgs = buildList(capacity = (prevJvmArgs?.size ?: 0) + 3) {
+                    if (prevJvmArgs != null) addAll(prevJvmArgs)
+
+                    add("-cp")
+                    add(ecjConfiguration.asPath)
+                    add(MAIN)
+                }
             }
         }
     }
