@@ -43,8 +43,12 @@ public class ECJPlugin : Plugin<Project> {
 
     }
 
-    override fun apply(target: Project): Unit = applyTo(target) {
-        pluginManager.apply(JavaBasePlugin::class)
+    override fun apply(target: Project): Unit = applyTo(target) project@{
+        /*
+         * Make sure that the JavaPlugin is applied before this plugin, since we have to override some property
+         * conventions. (Configuration happens in the same order in which the configuration actions are added.)
+         */
+        pluginManager.apply(JavaPlugin::class)
 
         val ecjConfiguration = configurations.create(ECJ_CONFIGURATION_NAME) {
             defaultDependencies {
