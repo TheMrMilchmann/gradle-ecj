@@ -69,8 +69,10 @@ public class ECJPlugin : Plugin<Project> {
             options.headerOutputDirectory.finalizeValue()
 
             afterEvaluate {
+                val javaLauncher = javaToolchains.launcherFor(java.toolchain).orNull ?: javaToolchains.launcherFor(java.toolchain { languageVersion.set(JavaLanguageVersion.of(11)) }).orNull ?: TODO()
+
                 options.isFork = true
-                options.forkOptions.executable = (javaToolchains.launcherFor(java.toolchain).orNull ?: TODO()).executablePath.asFile.absolutePath
+                options.forkOptions.executable = javaLauncher.executablePath.asFile.absolutePath
                 options.forkOptions.jvmArgs = listOf(
                     "-cp", ecjConfiguration.asPath,
                     MAIN
