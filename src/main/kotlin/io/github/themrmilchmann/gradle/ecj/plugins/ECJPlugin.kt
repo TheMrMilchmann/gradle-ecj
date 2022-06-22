@@ -85,13 +85,13 @@ public class ECJPlugin : Plugin<Project> {
             options.headerOutputDirectory.finalizeValue()
 
             afterEvaluate {
-                val toolchain = if (java.toolchain.languageVersion.orNull?.canCompileOrRun(REQUIRED_JAVA_VERSION) == true) {
-                    java.toolchain
+                val javaLauncher = if (java.toolchain.languageVersion.orNull?.canCompileOrRun(REQUIRED_JAVA_VERSION) == true) {
+                    javaToolchains.launcherFor(java.toolchain).orNull ?: error("Could not get launcher for toolchain: ${java.toolchain}")
                 } else {
-                    java.toolchain { languageVersion.set(JavaLanguageVersion.of(PREFERRED_JAVA_VERSION)) }
+                    javaToolchains.launcherFor {
+                        languageVersion.set(JavaLanguageVersion.of(PREFERRED_JAVA_VERSION))
+                    }.orNull ?: error("Could not provision launcher for Java $PREFERRED_JAVA_VERSION")
                 }
-
-                val javaLauncher = javaToolchains.launcherFor(toolchain).orNull ?: error("Could not get launcher for toolchain: $toolchain")
 
                 options.isFork = true
                 options.forkOptions.executable = javaLauncher.executablePath.asFile.absolutePath
