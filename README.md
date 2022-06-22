@@ -13,11 +13,63 @@ This plugin is loosely based on [Niklas Walter's Gradle Eclipse Compiler for Jav
 
 ## Usage
 
-TODO
+## Gradle Groovy DSL
+
+```groovy
+plugins {
+  id "io.github.themrmilchmann.ecj" version "0.1.0"
+}
+```
+
+Usually, simply applying the plugin is enough to cover most use-cases. However,
+in some scenarios, the ECJ artifact may be changed.
+
+### Configuring ECJ (via dependency)
+
+```groovy
+dependencies {
+    ecj "org.eclipse.jdt:ecj:3.30.0"
+}
+```
+
+### Configuring ECJ (via extension)
+
+```groovy
+ecj {
+  compilerGroupId = "org.eclipse.jdt"
+  compilerArtifactId = "ecj"
+  compilerVersion = "3.30.0"
+}
+```
+
+## Gradle Kotlin DSL
+
+### Applying the plugin
 
 ```kotlin
 plugins {
     id("io.github.themrmilchmann.ecj") version "0.1.0"
+}
+```
+
+Usually, simply applying the plugin is enough to cover most use-cases. However,
+in some scenarios, the ECJ artifact may be changed.
+
+### Configuring ECJ (via dependency)
+
+```kotlin
+dependencies {
+    ecj("org.eclipse.jdt:ecj:3.30.0")
+}
+```
+
+### Configuring ECJ (via extension)
+
+```kotlin
+ecj {
+  compilerGroupId.set("org.eclipse.jdt")
+  compilerArtifactId.set("ecj")
+  compilerVersion.set("3.30.0")
 }
 ```
 
@@ -27,6 +79,13 @@ plugins {
 | Gradle | Minimal plugin version |
 |--------|------------------------|
 | 7.4    | 0.1.0                  |
+
+
+## Plugin defaults
+
+| Plugin version | Default ECJ version |
+|----------------|---------------------|
+| 0.1.0+         | 3.30.0              |
 
 
 ## Building from source
