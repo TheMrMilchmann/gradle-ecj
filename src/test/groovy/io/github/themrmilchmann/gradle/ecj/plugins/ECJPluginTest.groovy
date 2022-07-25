@@ -30,7 +30,8 @@ import spock.lang.Unroll
 class ECJPluginTest extends Specification {
 
     private static def GRADLE_VERSIONS = [
-        "7.4.2"
+        "7.4.2",
+        "7.5"
     ]
 
     @TempDir
@@ -59,7 +60,7 @@ class ECJPluginTest extends Specification {
         """.stripIndent()
 
         when:
-        def result = runGradle("7.4.2", "build", "--info")
+        def result = runGradle(gradleVersion, "build", "--info")
 
         then:
         new File(projectDir, "build/classes/java/main/com/example/Main.class").isFile()
