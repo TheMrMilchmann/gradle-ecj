@@ -26,9 +26,7 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Gradle Build
-        run: |
-          ./gradlew --version --console=plain
-          ./gradlew build -Psnapshot --info -S --console=plain
+        run: ./gradlew build -Psnapshot --info -S --console=plain --show-version
 
       - name: Cleanup Gradle Cache
         run: |
