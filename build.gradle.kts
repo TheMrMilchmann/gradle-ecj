@@ -66,7 +66,7 @@ gradlePlugin {
 
 tasks {
     withType<KotlinCompile> {
-        kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+        kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
     }
 
     withType<Test> {
