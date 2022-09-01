@@ -112,8 +112,8 @@ or the following command on Windows:
 Important Gradle tasks to remember are:
 - `clean`                   - clean build results
 - `build`                   - assemble and test the Java library
-- `publishToMavenLocal`       - build and install all public artifacts to the
-  local maven repository
+- `publishToMavenLocal`     - build and install all public artifacts to the
+                              local maven repository
 
 Additionally `tasks` may be used to print a list of all available tasks.
 
