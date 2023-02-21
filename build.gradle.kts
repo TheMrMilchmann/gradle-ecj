@@ -83,7 +83,7 @@ val emptyJar = tasks.create<Jar>("emptyJar") {
 }
 
 publishing {
-    publications.withType<MavenPublication>() {
+    publications.withType<MavenPublication>().configureEach {
         if (name == "ecjPluginMarkerMaven") {
             artifact(emptyJar)
             artifact(emptyJar) { classifier = "javadoc" }
