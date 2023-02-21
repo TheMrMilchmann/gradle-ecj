@@ -27,7 +27,7 @@ import org.gradle.api.*
 import org.gradle.api.plugins.*
 import org.gradle.api.tasks.compile.*
 import org.gradle.jvm.toolchain.*
-import org.gradle.kotlin.dsl.*
+import org.gradle.process.CommandLineArgumentProvider
 
 public class ECJPlugin : Plugin<Project> {
 
@@ -49,15 +49,14 @@ public class ECJPlugin : Plugin<Project> {
 
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     override fun apply(target: Project): Unit = applyTo(target) project@{
         /*
          * Make sure that the JavaPlugin is applied before this plugin, since we have to override some properties.
          * (Configuration happens in the same order in which the configuration actions are added.)
          */
-        pluginManager.apply(JavaPlugin::class)
+        pluginManager.apply(JavaPlugin::class.java)
 
-        val ecjExtension = extensions.create<ECJExtension>("ecj")
+        val ecjExtension = extensions.create("ecj", ECJExtension::class.java)
 
         val ecjConfiguration = configurations.create(ECJ_CONFIGURATION_NAME) {
             defaultDependencies {
@@ -65,18 +64,16 @@ public class ECJPlugin : Plugin<Project> {
                 val compilerArtifactId = ecjExtension.compilerArtifactId.orNull ?: error("ECJ compilerArtifactId may not be null")
                 val compilerVersion = ecjExtension.compilerVersion.orNull ?: error("ECJ compilerVersion may not be null")
 
-                dependencies {
-                    add(create(group = compilerGroupId, name = compilerArtifactId, version = compilerVersion))
-                }
+                dependencies.add(target.dependencies.create("$compilerGroupId:$compilerArtifactId:$compilerVersion"))
             }
         }
 
-        val java = extensions.getByType<JavaPluginExtension>()
-        val javaToolchains = extensions.getByType<JavaToolchainService>()
+        val java = extensions.getByType(JavaPluginExtension::class.java)
+        val javaToolchains = extensions.getByType(JavaToolchainService::class.java)
 
-        tasks.withType<JavaCompile> {
+        tasks.withType(JavaCompile::class.java) {
             /* Overwrite the javaCompiler to make sure that it is not inferred from the toolchain. */
-            javaCompiler.set(this@project.provider { null })
+            javaCompiler.set(null as JavaCompiler?)
 
             /* ECJ does not support generating JNI headers. Make sure the property is not used. */
             options.headerOutputDirectory.set(this@project.provider { null })
@@ -93,14 +90,9 @@ public class ECJPlugin : Plugin<Project> {
                 options.isFork = true
                 options.forkOptions.executable = javaLauncher.executablePath.asFile.absolutePath
 
-                val prevJvmArgs = options.forkOptions.jvmArgs
-                options.forkOptions.jvmArgs = buildList(capacity = (prevJvmArgs?.size ?: 0) + 3) {
-                    if (prevJvmArgs != null) addAll(prevJvmArgs)
-
-                    add("-cp")
-                    add(ecjConfiguration.asPath)
-                    add(MAIN)
-                }
+                options.forkOptions.jvmArgumentProviders.add(CommandLineArgumentProvider {
+                    mutableListOf("-cp", ecjConfiguration.asPath, MAIN)
+                })
             }
         }
     }

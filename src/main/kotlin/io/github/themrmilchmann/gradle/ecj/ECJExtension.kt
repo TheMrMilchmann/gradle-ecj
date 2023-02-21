@@ -24,14 +24,13 @@ package io.github.themrmilchmann.gradle.ecj
 import io.github.themrmilchmann.gradle.ecj.plugins.ECJPlugin
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
-import org.gradle.kotlin.dsl.property
 import javax.inject.Inject
 
 public abstract class ECJExtension @Inject constructor(objects: ObjectFactory) {
 
-    public val compilerGroupId: Property<String> = objects.property<String>().convention(ECJPlugin.DEFAULT_DEPENDENCY_GROUP)
-    public val compilerArtifactId: Property<String> = objects.property<String>().convention(ECJPlugin.DEFAULT_DEPENDENCY_ARTIFACT)
-    public val compilerVersion: Property<String> = objects.property<String>().convention(ECJPlugin.DEFAULT_DEPENDENCY_VERSION)
+    public val compilerGroupId: Property<String> = objects.property(String::class.java).convention(ECJPlugin.DEFAULT_DEPENDENCY_GROUP)
+    public val compilerArtifactId: Property<String> = objects.property(String::class.java).convention(ECJPlugin.DEFAULT_DEPENDENCY_ARTIFACT)
+    public val compilerVersion: Property<String> = objects.property(String::class.java).convention(ECJPlugin.DEFAULT_DEPENDENCY_VERSION)
 
     init {
         compilerGroupId.finalizeValueOnRead()
