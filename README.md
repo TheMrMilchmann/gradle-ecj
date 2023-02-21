@@ -121,7 +121,7 @@ Additionally `tasks` may be used to print a list of all available tasks.
 ## License
 
 ```
-Copyright (c) 2022 Leon Linhart
+Copyright (c) 2022-2023 Leon Linhart
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
