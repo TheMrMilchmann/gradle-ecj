@@ -19,16 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-pluginManagement {
-    plugins {
-        id("org.gradle.toolchains.foojay-resolver-convention") version("0.4.0")
-    }
+package io.github.themrmilchmann.build
 
-    includeBuild("build-logic")
+enum class BuildType {
+    LOCAL,
+    SNAPSHOT,
+    RELEASE
 }
-
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention")
-}
-
-rootProject.name = "gradle-ecj"

@@ -19,24 +19,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import com.github.themrmilchmann.build.*
-import com.github.themrmilchmann.build.BuildType
 import org.jetbrains.kotlin.gradle.tasks.*
 
 plugins {
     groovy
     `java-test-fixtures`
     `kotlin-dsl`
-    `maven-publish`
-    signing
     alias(libs.plugins.plugin.publish)
-}
-
-group = "io.github.themrmilchmann.gradle.ecj"
-val nextVersion = "0.2.0"
-version = when (deployment.type) {
-    BuildType.SNAPSHOT -> "$nextVersion-SNAPSHOT"
-    else -> nextVersion
+    id("io.github.themrmilchmann.maven-publish-conventions")
 }
 
 java {
@@ -80,16 +70,6 @@ val emptyJar = tasks.create<Jar>("emptyJar") {
 }
 
 publishing {
-    repositories {
-        maven {
-            url = uri(deployment.repo)
-
-            credentials {
-                username = deployment.user
-                password = deployment.password
-            }
-        }
-    }
     publications.withType<MavenPublication> {
         if (name == "ecjPluginMarkerMaven") {
             artifact(emptyJar)
@@ -136,15 +116,6 @@ pluginBundle {
     vcsUrl = "https://github.com/TheMrMilchmann/gradle-ecj.git"
 
     tags = listOf("compile", "ecj", "eclipse compiler for java", "java")
-}
-
-signing {
-    isRequired = (deployment.type === BuildType.RELEASE)
-    sign(publishing.publications)
-}
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {
