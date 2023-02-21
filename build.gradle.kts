@@ -20,7 +20,6 @@
  * SOFTWARE.
  */
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import org.jetbrains.kotlin.gradle.tasks.*
 
 plugins {
     groovy
@@ -73,11 +72,7 @@ samWithReceiver {
 }
 
 tasks {
-    withType<KotlinCompile> {
-        kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
-    }
-
-    withType<Test> {
+    withType<Test>().configureEach {
         useJUnitPlatform()
     }
 }
@@ -88,7 +83,7 @@ val emptyJar = tasks.create<Jar>("emptyJar") {
 }
 
 publishing {
-    publications.withType<MavenPublication> {
+    publications.withType<MavenPublication>() {
         if (name == "ecjPluginMarkerMaven") {
             artifact(emptyJar)
             artifact(emptyJar) { classifier = "javadoc" }
