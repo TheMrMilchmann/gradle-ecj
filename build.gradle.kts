@@ -54,6 +54,10 @@ gradlePlugin {
     }
 }
 
+samWithReceiver {
+    annotation("org.gradle.api.HasImplicitReceiver")
+}
+
 tasks {
     withType<KotlinCompile> {
         kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
