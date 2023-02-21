@@ -43,11 +43,15 @@ kotlin {
 }
 
 gradlePlugin {
+    website.set("https://github.com/TheMrMilchmann/gradle-ecj")
+    vcsUrl.set("https://github.com/TheMrMilchmann/gradle-ecj.git")
+
     plugins {
         create("ecj") {
             id = "io.github.themrmilchmann.ecj"
             displayName = "Gradle Eclipse Compiler for Java Plugin"
             description = "A Gradle plugin for using the Eclipse Compiler for Java (ECJ) for compiling Java files"
+            tags.addAll("compile", "ecj", "eclipse compiler for java", "java")
 
             implementationClass = "io.github.themrmilchmann.gradle.ecj.plugins.ECJPlugin"
         }
@@ -113,13 +117,6 @@ publishing {
             }
         }
     }
-}
-
-pluginBundle {
-    website = "https://github.com/TheMrMilchmann/gradle-ecj"
-    vcsUrl = "https://github.com/TheMrMilchmann/gradle-ecj.git"
-
-    tags = listOf("compile", "ecj", "eclipse compiler for java", "java")
 }
 
 dependencies {
