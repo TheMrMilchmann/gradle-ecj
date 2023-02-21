@@ -21,6 +21,7 @@
  */
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
+@Suppress("DSL_SCOPE_VIOLATION") // See https://github.com/gradle/gradle/issues/22797
 plugins {
     groovy
     alias(libs.plugins.kotlin.jvm)
