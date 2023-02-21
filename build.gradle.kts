@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.*
 
 plugins {
@@ -40,6 +41,15 @@ java {
 
 kotlin {
     explicitApi()
+
+    target {
+        compilations.all {
+            compilerOptions.configure {
+                apiVersion.set(KotlinVersion.KOTLIN_1_4)
+                languageVersion.set(KotlinVersion.KOTLIN_1_8)
+            }
+        }
+    }
 }
 
 gradlePlugin {
