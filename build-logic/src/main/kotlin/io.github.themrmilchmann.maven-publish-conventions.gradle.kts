@@ -42,13 +42,13 @@ publishing {
     publications.withType<MavenPublication>().configureEach {
         pom {
             name.set(project.name)
-            url.set("https://github.com/TheMrMilchmann/gradle-toolchain-switches")
+            url.set("https://github.com/TheMrMilchmann/gradle-ecj")
 
             licenses {
                 licenses {
                     license {
                         name.set("MIT")
-                        url.set("https://github.com/TheMrMilchmann/gradle-toolchain-switches/blob/master/LICENSE")
+                        url.set("https://github.com/TheMrMilchmann/gradle-ecj/blob/master/LICENSE")
                         distribution.set("repo")
                     }
                 }
@@ -64,9 +64,9 @@ publishing {
             }
 
             scm {
-                connection.set("scm:git:git://github.com/TheMrMilchmann/gradle-toolchain-switches.git")
-                developerConnection.set("scm:git:git://github.com/TheMrMilchmann/gradle-toolchain-switches.git")
-                url.set("https://github.com/TheMrMilchmann/gradle-toolchain-switches.git")
+                connection.set("scm:git:git://github.com/TheMrMilchmann/gradle-ecj.git")
+                developerConnection.set("scm:git:git://github.com/TheMrMilchmann/gradle-ecj.git")
+                url.set("https://github.com/TheMrMilchmann/gradle-ecj.git")
             }
         }
     }
