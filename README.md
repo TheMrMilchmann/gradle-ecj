@@ -28,7 +28,7 @@ in some scenarios, the ECJ artifact may be changed.
 
 ```groovy
 dependencies {
-    ecj "org.eclipse.jdt:ecj:3.30.0"
+    ecj "org.eclipse.jdt:ecj:3.32.0"
 }
 ```
 
@@ -38,7 +38,7 @@ dependencies {
 ecj {
   compilerGroupId = "org.eclipse.jdt"
   compilerArtifactId = "ecj"
-  compilerVersion = "3.30.0"
+  compilerVersion = "3.32.0"
 }
 ```
 
@@ -59,7 +59,7 @@ in some scenarios, the ECJ artifact may be changed.
 
 ```kotlin
 dependencies {
-    ecj("org.eclipse.jdt:ecj:3.30.0")
+    ecj("org.eclipse.jdt:ecj:3.32.0")
 }
 ```
 
@@ -69,7 +69,7 @@ dependencies {
 ecj {
   compilerGroupId.set("org.eclipse.jdt")
   compilerArtifactId.set("ecj")
-  compilerVersion.set("3.30.0")
+  compilerVersion.set("3.32.0")
 }
 ```
 
@@ -85,6 +85,7 @@ ecj {
 
 | Plugin version | Default ECJ version |
 |----------------|---------------------|
+| 0.2.0+         | 3.32.0              |
 | 0.1.0+         | 3.30.0              |
 
 

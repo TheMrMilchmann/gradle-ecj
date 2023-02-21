@@ -37,7 +37,7 @@ public class ECJPlugin : Plugin<Project> {
 
         const val DEFAULT_DEPENDENCY_GROUP = "org.eclipse.jdt"
         const val DEFAULT_DEPENDENCY_ARTIFACT = "ecj"
-        const val DEFAULT_DEPENDENCY_VERSION = "3.30.0"
+        const val DEFAULT_DEPENDENCY_VERSION = "3.32.0"
 
         const val MAIN = "org.eclipse.jdt.internal.compiler.batch.Main"
 
