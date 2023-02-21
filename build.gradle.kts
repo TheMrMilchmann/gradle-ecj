@@ -23,8 +23,8 @@ import org.jetbrains.kotlin.gradle.tasks.*
 
 plugins {
     groovy
-    `java-test-fixtures`
-    `kotlin-dsl`
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.plugin.samwithreceiver)
     alias(libs.plugins.plugin.publish)
     id("io.github.themrmilchmann.maven-publish-conventions")
 }
@@ -119,6 +119,6 @@ pluginBundle {
 }
 
 dependencies {
-    testFixturesApi(platform(libs.spock.bom))
-    testFixturesApi(libs.spock.core)
+    testImplementation(platform(libs.spock.bom))
+    testImplementation(libs.spock.core)
 }
