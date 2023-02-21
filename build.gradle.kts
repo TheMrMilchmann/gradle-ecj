@@ -88,33 +88,8 @@ publishing {
         pom {
             name.set("Gradle Eclipse Compiler for Java Plugin")
             description.set("A Gradle plugin for using the Eclipse Compiler for Java (ECJ) for compiling Java files")
+
             packaging = "jar"
-            url.set("https://github.com/TheMrMilchmann/gradle-ecj")
-
-            licenses {
-                licenses {
-                    license {
-                        name.set("MIT")
-                        url.set("https://github.com/TheMrMilchmann/gradle-ecj/blob/master/LICENSE")
-                        distribution.set("repo")
-                    }
-                }
-            }
-
-            developers {
-                developer {
-                    id.set("TheMrMilchmann")
-                    name.set("Leon Linhart")
-                    email.set("themrmilchmann@gmail.com")
-                    url.set("https://github.com/TheMrMilchmann")
-                }
-            }
-
-            scm {
-                connection.set("scm:git:git://github.com/TheMrMilchmann/gradle-ecj.git")
-                developerConnection.set("scm:git:git://github.com/TheMrMilchmann/gradle-ecj.git")
-                url.set("https://github.com/TheMrMilchmann/gradle-ecj.git")
-            }
         }
     }
 }
