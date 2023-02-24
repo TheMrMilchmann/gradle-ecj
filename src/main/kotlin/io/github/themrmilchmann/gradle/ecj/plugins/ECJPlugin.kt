@@ -71,14 +71,14 @@ public class ECJPlugin : Plugin<Project> {
         val java = extensions.getByType(JavaPluginExtension::class.java)
         val javaToolchains = extensions.getByType(JavaToolchainService::class.java)
 
-        tasks.withType(JavaCompile::class.java) {
+        tasks.withType(JavaCompile::class.java).configureEach {
             /* Overwrite the javaCompiler to make sure that it is not inferred from the toolchain. */
             javaCompiler.set(null as JavaCompiler?)
 
             /* ECJ does not support generating JNI headers. Make sure the property is not used. */
             options.headerOutputDirectory.set(this@project.provider { null })
 
-            afterEvaluate {
+            doFirst {
                 val javaLauncher = if (java.toolchain.languageVersion.orNull?.canCompileOrRun(REQUIRED_JAVA_VERSION) == true) {
                     javaToolchains.launcherFor(java.toolchain).orNull ?: error("Could not get launcher for toolchain: ${java.toolchain}")
                 } else {
