@@ -1,4 +1,5 @@
 [versions]
+gradle-toolchain-switches = "0.2.0"
 kotlin = "1.8.10"
 plugin-publish = "1.1.0"
 spock = "2.3-groovy-3.0"
@@ -13,6 +14,9 @@ spock-core = { module = "org.spockframework:spock-core", version.ref = "spock" }
 [plugins]
 # com.gradle.plugin-publish - plugin-publish
 plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }
+
+# io.github.themrmilchmann.toolchain-switches - Gradle Toolchain Switches Plugin
+gradle-toolchain-switches = { id = "io.github.themrmilchmann.toolchain-switches", version.ref = "gradle-toolchain-switches" }
 
 # org.jetbrains.kotlin - Kotlin
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
