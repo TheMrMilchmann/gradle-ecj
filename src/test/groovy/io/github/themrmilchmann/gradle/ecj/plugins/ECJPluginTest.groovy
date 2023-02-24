@@ -134,13 +134,4 @@ class ECJPluginTest extends Specification {
             """.stripIndent()
     }
 
-    protected File createFile(String path, File baseDir = projectDir) {
-        File file = new File(baseDir, path)
-        if (!file.exists()) {
-            assert file.parentFile.mkdirs() || file.parentFile.exists()
-            file.createNewFile()
-        }
-        return file
-    }
-
 }
