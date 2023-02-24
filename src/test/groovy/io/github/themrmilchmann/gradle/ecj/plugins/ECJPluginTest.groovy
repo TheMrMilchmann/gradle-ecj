@@ -71,6 +71,38 @@ class ECJPluginTest extends Specification {
         gradleVersion << GRADLE_VERSIONS
     }
 
+    @Unroll
+    def "run with toolchain (Gradle #gradleVersion)"() {
+        given:
+        writeHelloWorld()
+        buildFile << """\
+            plugins {
+                id 'java-library'
+                id 'io.github.themrmilchmann.ecj'
+            }
+            
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
+            
+            repositories {
+                mavenCentral()
+            }
+        """.stripIndent()
+
+        when:
+        def result = runGradle(gradleVersion, "build", "--info")
+
+        then:
+        new File(projectDir, "build/classes/java/main/com/example/Main.class").isFile()
+        result.task(":compileJava").outcome == TaskOutcome.SUCCESS
+
+        where:
+        gradleVersion << GRADLE_VERSIONS
+    }
+
     private runGradle(String version, String... args) {
         def arguments = []
         arguments.addAll(args)
