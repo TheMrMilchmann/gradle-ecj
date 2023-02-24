@@ -59,6 +59,9 @@ public class ECJPlugin : Plugin<Project> {
         val ecjExtension = extensions.create("ecj", ECJExtension::class.java)
 
         val ecjConfiguration = configurations.create(ECJ_CONFIGURATION_NAME) {
+            isCanBeConsumed = false
+            isCanBeResolved = true
+
             defaultDependencies {
                 val compilerGroupId = ecjExtension.compilerGroupId.orNull ?: error("ECJ compilerGroupId may not be null")
                 val compilerArtifactId = ecjExtension.compilerArtifactId.orNull ?: error("ECJ compilerArtifactId may not be null")
