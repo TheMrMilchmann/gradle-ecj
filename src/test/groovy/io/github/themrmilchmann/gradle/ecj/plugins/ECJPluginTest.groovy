@@ -31,7 +31,8 @@ class ECJPluginTest extends Specification {
 
     private static def GRADLE_VERSIONS = [
         "7.4.2",
-        "7.5"
+        "7.5",
+        "7.6"
     ]
 
     @TempDir
