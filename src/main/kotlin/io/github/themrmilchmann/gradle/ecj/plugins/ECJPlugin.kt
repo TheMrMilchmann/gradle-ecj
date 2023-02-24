@@ -24,7 +24,9 @@ package io.github.themrmilchmann.gradle.ecj.plugins
 import io.github.themrmilchmann.gradle.ecj.ECJExtension
 import io.github.themrmilchmann.gradle.ecj.internal.utils.*
 import org.gradle.api.*
+import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.*
+import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.compile.*
 import org.gradle.jvm.toolchain.*
 import org.gradle.process.CommandLineArgumentProvider
@@ -74,30 +76,54 @@ public class ECJPlugin : Plugin<Project> {
         val java = extensions.getByType(JavaPluginExtension::class.java)
         val javaToolchains = extensions.getByType(JavaToolchainService::class.java)
 
-        tasks.withType(JavaCompile::class.java) {
+        tasks.withType(JavaCompile::class.java).configureEach {
             /* Overwrite the javaCompiler to make sure that it is not inferred from the toolchain. */
-            javaCompiler.set(null as JavaCompiler?)
+            javaCompiler.set(provider { null })
 
             /* ECJ does not support generating JNI headers. Make sure the property is not used. */
             options.headerOutputDirectory.set(this@project.provider { null })
 
-            afterEvaluate {
-                val javaLauncher = if (java.toolchain.languageVersion.orNull?.canCompileOrRun(REQUIRED_JAVA_VERSION) == true) {
+            options.isFork = true
+            options.forkOptions.jvmArgumentProviders.add(ECJCommandLineArgumentProvider(ecjConfiguration))
+
+            /*
+             * forkOptions.executable is, unfortunately, not a property. Setting it eagerly here (at configuration time)
+             * would be a bad decision and could lead to ordering issues. Thus, we create a provider here instead.
+             * However, we still have to register this provider as task input for proper incremental builds.
+             * Unfortunately, it is not possible to replicate the functionality of @Nested for programmatically defined
+             * task inputs. Hence, we can only use the languageVersion for now. This could lead to some undesired cache
+             * hits but the chance should be low and there is very little risk of this being an issue.
+             */
+            val javaLauncher = provider {
+                if (java.toolchain.languageVersion.orNull?.canCompileOrRun(REQUIRED_JAVA_VERSION) == true) {
                     javaToolchains.launcherFor(java.toolchain).orNull ?: error("Could not get launcher for toolchain: ${java.toolchain}")
                 } else {
                     javaToolchains.launcherFor {
                         languageVersion.set(JavaLanguageVersion.of(PREFERRED_JAVA_VERSION))
                     }.orNull ?: error("Could not provision launcher for Java $PREFERRED_JAVA_VERSION")
                 }
-
-                options.isFork = true
-                options.forkOptions.executable = javaLauncher.executablePath.asFile.absolutePath
-
-                options.forkOptions.jvmArgumentProviders.add(CommandLineArgumentProvider {
-                    mutableListOf("-cp", ecjConfiguration.asPath, MAIN)
-                })
             }
+
+            inputs.property("javaLauncher", javaLauncher.map { it.metadata.languageVersion.asInt() })
+
+            /* See https://docs.gradle.org/7.4.2/userguide/validation_problems.html#implementation_unknown */
+            @Suppress("ObjectLiteralToLambda")
+            doFirst(object : Action<Task> {
+                override fun execute(t: Task) {
+                    options.forkOptions.executable = javaLauncher.get().executablePath.asFile.absolutePath
+                }
+            })
         }
+    }
+
+    private class ECJCommandLineArgumentProvider(
+        @get:Classpath
+        val compilerClasspath: FileCollection
+    ) : CommandLineArgumentProvider {
+
+        override fun asArguments(): MutableIterable<String> =
+            mutableListOf("-cp", compilerClasspath.asPath, MAIN)
+
     }
 
 }
