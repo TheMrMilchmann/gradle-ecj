@@ -19,11 +19,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 @Suppress("DSL_SCOPE_VIOLATION") // See https://github.com/gradle/gradle/issues/22797
 plugins {
-    groovy
+    alias(libs.plugins.gradle.plugin.functional.test)
     alias(libs.plugins.gradle.toolchain.switches)
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.plugin.samwithreceiver)
@@ -46,14 +48,24 @@ kotlin {
     target {
         compilations.all {
             compilerOptions.configure {
-                apiVersion.set(KotlinVersion.KOTLIN_1_4)
+                apiVersion.set(KotlinVersion.KOTLIN_1_8)
                 languageVersion.set(KotlinVersion.KOTLIN_1_8)
+            }
+        }
+
+        compilations.named("main").configure {
+            compilerOptions.configure {
+                apiVersion.set(KotlinVersion.KOTLIN_1_4)
             }
         }
     }
 }
 
 gradlePlugin {
+    compatibility {
+        minimumGradleVersion.set("7.4")
+    }
+
     website.set("https://github.com/TheMrMilchmann/gradle-ecj")
     vcsUrl.set("https://github.com/TheMrMilchmann/gradle-ecj.git")
 
@@ -74,6 +86,16 @@ samWithReceiver {
 }
 
 tasks {
+    withType<JavaCompile>().configureEach {
+        options.release.set(8)
+    }
+
+    withType<KotlinCompile>().configureEach {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_1_8)
+        }
+    }
+
     withType<Test>().configureEach {
         useJUnitPlatform()
 
@@ -105,6 +127,8 @@ publishing {
 }
 
 dependencies {
-    testImplementation(platform(libs.spock.bom))
-    testImplementation(libs.spock.core)
+    functionalTestImplementation(platform(libs.junit.bom))
+    functionalTestImplementation(libs.junit.jupiter.api)
+    functionalTestImplementation(libs.junit.jupiter.params)
+    functionalTestRuntimeOnly(libs.junit.jupiter.engine)
 }
