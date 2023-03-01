@@ -76,6 +76,9 @@ samWithReceiver {
 tasks {
     withType<Test>().configureEach {
         useJUnitPlatform()
+
+        systemProperty("junit.jupiter.execution.parallel.enabled", true)
+        systemProperty("junit.jupiter.execution.parallel.mode.default", "concurrent")
     }
 }
 
