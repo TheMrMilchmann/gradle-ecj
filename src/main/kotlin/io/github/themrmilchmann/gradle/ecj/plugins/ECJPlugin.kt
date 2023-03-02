@@ -80,11 +80,6 @@ public class ECJPlugin : Plugin<Project> {
         val javaToolchains = extensions.getByType(JavaToolchainService::class.java)
 
         tasks.withType(JavaCompile::class.java).configureEach {
-            if (GradleVersion.current() < GRADLE_8_0) {
-                /* Overwrite the javaCompiler to make sure that it is not inferred from the toolchain. */
-                javaCompiler.set(provider { null })
-            }
-
             /* ECJ does not support generating JNI headers. Make sure the property is not used. */
             options.headerOutputDirectory.set(provider { null })
 
@@ -99,23 +94,37 @@ public class ECJPlugin : Plugin<Project> {
              * task inputs. Hence, we can only use the languageVersion for now. This could lead to some undesired cache
              * hits but the chance should be low and there is very little risk of this being an issue.
              */
-            val javaLauncher = provider {
+            val defaultJavaCompiler = provider {
                 if (java.toolchain.languageVersion.orNull?.canCompileOrRun(REQUIRED_JAVA_VERSION) == true) {
-                    javaToolchains.launcherFor(java.toolchain).orNull ?: error("Could not get launcher for toolchain: ${java.toolchain}")
+                    javaToolchains.compilerFor(java.toolchain).orNull ?: error("Could not get launcher for toolchain: ${java.toolchain}")
                 } else {
-                    javaToolchains.launcherFor {
+                    javaToolchains.compilerFor {
                         languageVersion.set(JavaLanguageVersion.of(PREFERRED_JAVA_VERSION))
                     }.orNull ?: error("Could not provision launcher for Java $PREFERRED_JAVA_VERSION")
                 }
             }
 
-            inputs.property("javaLauncher", javaLauncher.map { it.metadata.languageVersion.asInt() })
+            if (GradleVersion.current() < GRADLE_8_0) {
+                /* Overwrite the javaCompiler to make sure that it is not inferred from the toolchain. */
+                javaCompiler.set(provider { null })
+                inputs.property("javaLauncher", defaultJavaCompiler.map { it.metadata.languageVersion.asInt() })
+            } else {
+                this.javaCompiler.convention(defaultJavaCompiler)
+            }
 
             /* See https://docs.gradle.org/7.4.2/userguide/validation_problems.html#implementation_unknown */
             @Suppress("ObjectLiteralToLambda")
             doFirst(object : Action<Task> {
                 override fun execute(t: Task) {
-                    options.forkOptions.executable = javaLauncher.get().executablePath.asFile.absolutePath
+                    val javacExecutable = javaCompiler.orElse(defaultJavaCompiler).get().executablePath.asFile
+
+                    /*
+                     * We replace the "javac" part of the original executable name instead of simply resolving "java" to
+                     * account for file extensions.
+                     */
+                    val javaExecutable = javacExecutable.resolveSibling(javacExecutable.name.replace("javac", "java"))
+
+                    options.forkOptions.executable = javaExecutable.absolutePath
                 }
             })
         }
