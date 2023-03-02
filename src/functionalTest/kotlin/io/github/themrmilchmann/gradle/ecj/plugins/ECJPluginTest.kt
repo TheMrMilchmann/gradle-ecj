@@ -92,6 +92,7 @@ class ECJPluginTest {
             .withGradleVersion(gradleVersion)
             .withPluginClasspath()
             .withProjectDir(projectDir.toFile())
+            .forwardOutput()
             .build()
     }
 
@@ -125,6 +126,7 @@ class ECJPluginTest {
             .withGradleVersion(gradleVersion)
             .withPluginClasspath()
             .withProjectDir(projectDir.toFile())
+            .forwardOutput()
             .build()
     }
 
@@ -159,6 +161,7 @@ class ECJPluginTest {
             .withGradleVersion(gradleVersion)
             .withPluginClasspath()
             .withProjectDir(projectDir.toFile())
+            .forwardOutput()
             .build()
     }
 
