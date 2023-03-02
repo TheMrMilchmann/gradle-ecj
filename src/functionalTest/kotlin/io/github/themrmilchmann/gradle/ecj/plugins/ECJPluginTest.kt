@@ -22,7 +22,10 @@
 package io.github.themrmilchmann.gradle.ecj.plugins
 
 import org.gradle.api.JavaVersion
+import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
+import org.gradle.testkit.runner.TaskOutcome
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -92,13 +95,13 @@ class ECJPluginTest {
             """.trimIndent()
         )
 
-        GradleRunner.create()
-            .withArguments("build", "--info")
-            .withGradleVersion(gradleVersion)
-            .withPluginClasspath()
-            .withProjectDir(projectDir.toFile())
-            .forwardOutput()
-            .build()
+        var buildResult = runGradleBuild(gradleVersion)
+        assertEquals(TaskOutcome.SUCCESS, buildResult.task(":compileJava")?.outcome)
+        assertTrue(buildResult.output.contains("Compiling with Java command line compiler '.+[/\\\\]bin[/\\\\]java(.exe)?'.".toRegex()))
+
+        // Test up-to-date checks
+        buildResult = runGradleBuild(gradleVersion)
+        assertEquals(TaskOutcome.UP_TO_DATE, buildResult.task(":compileJava")?.outcome)
     }
 
     @ParameterizedTest
@@ -126,15 +129,14 @@ class ECJPluginTest {
             """.trimIndent()
         )
 
-        GradleRunner.create()
-            .withArguments("build", "--info")
-            .withGradleVersion(gradleVersion)
-            .withPluginClasspath()
-            .withProjectDir(projectDir.toFile())
-            .forwardOutput()
-            .build()
-    }
+        var buildResult = runGradleBuild(gradleVersion)
+        assertEquals(TaskOutcome.SUCCESS, buildResult.task(":compileJava")?.outcome)
+        assertTrue(buildResult.output.contains("Compiling with Java command line compiler '.+[/\\\\]bin[/\\\\]java(.exe)?'.".toRegex()))
 
+        // Test up-to-date checks
+        buildResult = runGradleBuild(gradleVersion)
+        assertEquals(TaskOutcome.UP_TO_DATE, buildResult.task(":compileJava")?.outcome)
+    }
 
     @ParameterizedTest
     @MethodSource("provideGradleVersions")
@@ -161,6 +163,16 @@ class ECJPluginTest {
             """.trimIndent()
         )
 
+        var buildResult = runGradleBuild(gradleVersion)
+        assertEquals(TaskOutcome.SUCCESS, buildResult.task(":compileJava")?.outcome)
+        assertTrue(buildResult.output.contains("Compiling with Java command line compiler '.+[/\\\\]bin[/\\\\]java(.exe)?'.".toRegex()))
+
+        // Test up-to-date checks
+        buildResult = runGradleBuild(gradleVersion)
+        assertEquals(TaskOutcome.UP_TO_DATE, buildResult.task(":compileJava")?.outcome)
+    }
+
+    private fun runGradleBuild(gradleVersion: String): BuildResult =
         GradleRunner.create()
             .withArguments("build", "--info")
             .withGradleVersion(gradleVersion)
@@ -168,7 +180,6 @@ class ECJPluginTest {
             .withProjectDir(projectDir.toFile())
             .forwardOutput()
             .build()
-    }
 
     private fun writeSettingsFile(gradleVersion: String) {
         if (gradleVersion < "8.0") return
