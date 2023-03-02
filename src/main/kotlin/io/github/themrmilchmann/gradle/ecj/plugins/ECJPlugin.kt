@@ -30,6 +30,7 @@ import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.compile.*
 import org.gradle.jvm.toolchain.*
 import org.gradle.process.CommandLineArgumentProvider
+import org.gradle.util.GradleVersion
 
 public class ECJPlugin : Plugin<Project> {
 
@@ -48,6 +49,8 @@ public class ECJPlugin : Plugin<Project> {
 
         /* The version required to run ECJ. */
         const val REQUIRED_JAVA_VERSION = 11
+
+        private val GRADLE_8_0 = GradleVersion.version("8.0")
 
     }
 
@@ -77,11 +80,13 @@ public class ECJPlugin : Plugin<Project> {
         val javaToolchains = extensions.getByType(JavaToolchainService::class.java)
 
         tasks.withType(JavaCompile::class.java).configureEach {
-            /* Overwrite the javaCompiler to make sure that it is not inferred from the toolchain. */
-            javaCompiler.set(provider { null })
+            if (GradleVersion.current() < GRADLE_8_0) {
+                /* Overwrite the javaCompiler to make sure that it is not inferred from the toolchain. */
+                javaCompiler.set(provider { null })
+            }
 
             /* ECJ does not support generating JNI headers. Make sure the property is not used. */
-            options.headerOutputDirectory.set(this@project.provider { null })
+            options.headerOutputDirectory.set(provider { null })
 
             options.isFork = true
             options.forkOptions.jvmArgumentProviders.add(ECJCommandLineArgumentProvider(ecjConfiguration))
