@@ -43,14 +43,13 @@ class ECJPluginTest {
             // See https://docs.gradle.org/current/userguide/compatibility.html
             val javaVersion = JavaVersion.current()
 
+            add("8.0.2")
             /*
              * We cannot support Gradle 8.0 (and 8.0.1) due to a regression that
              * prevents us from using a Java executable to launch ECJ.
              *
              * See https://github.com/gradle/gradle/issues/23990
              */
-            add("8.0.2-20230301020537+0000")
-
             add("7.6.1")
             add("7.6")
 
