@@ -47,8 +47,9 @@ jobs:
     strategy:
       matrix:
         jdk: [ 8, 11, 17, 19 ]
+        os: [ macos-latest, ubuntu-latest, windows-latest ]
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/download-artifact@v3
