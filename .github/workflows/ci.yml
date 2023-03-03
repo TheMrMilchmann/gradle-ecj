@@ -74,31 +74,6 @@ jobs:
           gradle-home-cache-cleanup: true
 
 
-#  samples:
-#    name: Samples
-#    needs: [build]
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/download-artifact@v3
-#        with:
-#          name: ${{ env.WORKSPACE_ARTIFACT }}
-#          path: .
-#
-#      - name: Untar
-#        run: |
-#          tar -xvf ${{ env.WORKSPACE_ARCHIVE }}
-#          rm ${{ env.WORKSPACE_ARCHIVE }}
-#
-#      - uses: actions/setup-java@v3
-#        with:
-#          distribution: "temurin"
-#          java-version: ${{ env.JDK_VERSION }}
-#
-#      - name: Gradle Build
-#        run: find samples/ -mindepth 1 -maxdepth 1 -type d -print0 | xargs -0 -n1 bash -c 'cd "$0" && echo $PWD && ./gradlew build --include-build ../../'
-
-
   # So, what's happening here?
   #
   # Basically, restoring the workspace state between jobs is incredibly annoying.
@@ -114,7 +89,7 @@ jobs:
   cleanup:
     name: Cleanup
     if: ${{ always() }}
-    needs: [check] # TODO re-add samples
+    needs: check
     runs-on: ubuntu-latest
     steps:
       - name: Cleanup
