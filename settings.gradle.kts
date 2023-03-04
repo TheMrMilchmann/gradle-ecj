@@ -32,3 +32,5 @@ plugins {
 }
 
 rootProject.name = "gradle-ecj"
+
+enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
