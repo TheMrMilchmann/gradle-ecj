@@ -1,4 +1,5 @@
 [versions]
+binary-compatibility-validator = "0.13.0"
 gradle-toolchain-switches = "0.2.0"
 junit = "5.9.2"
 kotlin = "1.8.10"
@@ -23,6 +24,9 @@ gradle-plugin-functional-test = { id = "dev.gradleplugins.gradle-plugin-function
 
 # io.github.themrmilchmann.toolchain-switches - Gradle Toolchain Switches Plugin
 gradle-toolchain-switches = { id = "io.github.themrmilchmann.toolchain-switches", version.ref = "gradle-toolchain-switches" }
+
+# org.jetbrains.kotlinx.binary-compatibility-validator - binary-compatibility-validator
+binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility-validator" }
 
 # org.jetbrains.kotlin - Kotlin
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
