@@ -70,7 +70,7 @@ jobs:
       - name: Gradle Check
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: check -Psnapshot --info -S --show-version -Ptoolchain.test.version=${{ matrix.jdk }}
+          arguments: check -Psnapshot --info -S --show-version -Ptoolchain.functionalTest.version=${{ matrix.jdk }}
           gradle-home-cache-cleanup: true
 
 
