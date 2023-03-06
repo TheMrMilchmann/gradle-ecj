@@ -17,7 +17,7 @@ This plugin is loosely based on [Niklas Walter's Gradle Eclipse Compiler for Jav
 
 ```groovy
 plugins {
-  id "io.github.themrmilchmann.ecj" version "0.1.0"
+  id "io.github.themrmilchmann.ecj" version "0.2.0"
 }
 ```
 
@@ -48,7 +48,7 @@ ecj {
 
 ```kotlin
 plugins {
-    id("io.github.themrmilchmann.ecj") version "0.1.0"
+    id("io.github.themrmilchmann.ecj") version "0.2.0"
 }
 ```
 
@@ -78,6 +78,7 @@ ecj {
 
 | Gradle | Minimal plugin version |
 |--------|------------------------|
+| 8.0    | 0.2.0                  |
 | 7.4    | 0.1.0                  |
 
 
