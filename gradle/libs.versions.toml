@@ -1,6 +1,6 @@
 [versions]
 binary-compatibility-validator = "0.13.0"
-gradle-toolchain-switches = "0.2.0"
+gradle-toolchain-switches = "0.3.0"
 junit = "5.9.2"
 kotlin = "1.8.10"
 nokee-gradle-plugin-dev = "1.6.9"
