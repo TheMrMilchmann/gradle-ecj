@@ -19,6 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import io.github.themrmilchmann.gradle.toolchainswitches.ExperimentalToolchainSwitchesApi
+import io.github.themrmilchmann.gradle.toolchainswitches.inferLauncher
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -99,6 +101,11 @@ tasks {
 
     withType<Test>().configureEach {
         useJUnitPlatform()
+
+        @OptIn(ExperimentalToolchainSwitchesApi::class)
+        javaLauncher.set(inferLauncher(default = project.javaToolchains.launcherFor {
+            languageVersion.set(JavaLanguageVersion.of(8))
+        }))
 
         systemProperty("junit.jupiter.execution.parallel.enabled", true)
         systemProperty("junit.jupiter.execution.parallel.mode.default", "concurrent")
