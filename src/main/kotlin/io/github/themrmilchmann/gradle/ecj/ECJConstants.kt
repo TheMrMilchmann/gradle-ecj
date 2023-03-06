@@ -21,20 +21,21 @@
  */
 package io.github.themrmilchmann.gradle.ecj
 
-import org.gradle.api.model.ObjectFactory
-import org.gradle.api.provider.Property
-import javax.inject.Inject
+@Suppress("MayBeConstant")
+public object ECJConstants {
 
-public abstract class ECJExtension @Inject constructor(objects: ObjectFactory) {
+    public val ECJ_CONFIGURATION_NAME: String = "ecj"
 
-    public val compilerGroupId: Property<String> = objects.property(String::class.java).convention(ECJConstants.DEFAULT_DEPENDENCY_GROUP)
-    public val compilerArtifactId: Property<String> = objects.property(String::class.java).convention(ECJConstants.DEFAULT_DEPENDENCY_ARTIFACT)
-    public val compilerVersion: Property<String> = objects.property(String::class.java).convention(ECJConstants.DEFAULT_DEPENDENCY_VERSION)
+    public val DEFAULT_DEPENDENCY_GROUP: String = "org.eclipse.jdt"
+    public val DEFAULT_DEPENDENCY_ARTIFACT: String = "ecj"
+    public val DEFAULT_DEPENDENCY_VERSION: String = "3.32.0"
 
-    init {
-        compilerGroupId.finalizeValueOnRead()
-        compilerArtifactId.finalizeValueOnRead()
-        compilerVersion.finalizeValueOnRead()
-    }
+    public val MAIN: String = "org.eclipse.jdt.internal.compiler.batch.Main"
+
+    /* The version for which a toolchain is requested if the project's toolchain is not compatible. */
+    public val PREFERRED_JAVA_VERSION: Int = 17
+
+    /* The version required to run ECJ. */
+    public val REQUIRED_JAVA_VERSION: Int = 11
 
 }

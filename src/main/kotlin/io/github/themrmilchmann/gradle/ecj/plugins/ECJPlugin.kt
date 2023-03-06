@@ -21,6 +21,10 @@
  */
 package io.github.themrmilchmann.gradle.ecj.plugins
 
+import io.github.themrmilchmann.gradle.ecj.ECJConstants.ECJ_CONFIGURATION_NAME
+import io.github.themrmilchmann.gradle.ecj.ECJConstants.MAIN
+import io.github.themrmilchmann.gradle.ecj.ECJConstants.PREFERRED_JAVA_VERSION
+import io.github.themrmilchmann.gradle.ecj.ECJConstants.REQUIRED_JAVA_VERSION
 import io.github.themrmilchmann.gradle.ecj.ECJExtension
 import io.github.themrmilchmann.gradle.ecj.internal.utils.*
 import org.gradle.api.*
@@ -34,21 +38,7 @@ import org.gradle.util.GradleVersion
 
 public class ECJPlugin : Plugin<Project> {
 
-    internal companion object {
-
-        const val ECJ_CONFIGURATION_NAME = "ecj"
-
-        const val DEFAULT_DEPENDENCY_GROUP = "org.eclipse.jdt"
-        const val DEFAULT_DEPENDENCY_ARTIFACT = "ecj"
-        const val DEFAULT_DEPENDENCY_VERSION = "3.32.0"
-
-        const val MAIN = "org.eclipse.jdt.internal.compiler.batch.Main"
-
-        /* The version for which a toolchain is requested if the project's toolchain is not compatible. */
-        const val PREFERRED_JAVA_VERSION = 17
-
-        /* The version required to run ECJ. */
-        const val REQUIRED_JAVA_VERSION = 11
+    private companion object {
 
         private val GRADLE_8_0 = GradleVersion.version("8.0")
 

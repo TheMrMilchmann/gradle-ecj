@@ -1,3 +1,14 @@
+public final class io/github/themrmilchmann/gradle/ecj/ECJConstants {
+	public static final field INSTANCE Lio/github/themrmilchmann/gradle/ecj/ECJConstants;
+	public final fun getDEFAULT_DEPENDENCY_ARTIFACT ()Ljava/lang/String;
+	public final fun getDEFAULT_DEPENDENCY_GROUP ()Ljava/lang/String;
+	public final fun getDEFAULT_DEPENDENCY_VERSION ()Ljava/lang/String;
+	public final fun getECJ_CONFIGURATION_NAME ()Ljava/lang/String;
+	public final fun getMAIN ()Ljava/lang/String;
+	public final fun getPREFERRED_JAVA_VERSION ()I
+	public final fun getREQUIRED_JAVA_VERSION ()I
+}
+
 public abstract class io/github/themrmilchmann/gradle/ecj/ECJExtension {
 	public fun <init> (Lorg/gradle/api/model/ObjectFactory;)V
 	public final fun getCompilerArtifactId ()Lorg/gradle/api/provider/Property;
@@ -6,13 +17,6 @@ public abstract class io/github/themrmilchmann/gradle/ecj/ECJExtension {
 }
 
 public final class io/github/themrmilchmann/gradle/ecj/plugins/ECJPlugin : org/gradle/api/Plugin {
-	public static final field DEFAULT_DEPENDENCY_ARTIFACT Ljava/lang/String;
-	public static final field DEFAULT_DEPENDENCY_GROUP Ljava/lang/String;
-	public static final field DEFAULT_DEPENDENCY_VERSION Ljava/lang/String;
-	public static final field ECJ_CONFIGURATION_NAME Ljava/lang/String;
-	public static final field MAIN Ljava/lang/String;
-	public static final field PREFERRED_JAVA_VERSION I
-	public static final field REQUIRED_JAVA_VERSION I
 	public fun <init> ()V
 	public synthetic fun apply (Ljava/lang/Object;)V
 	public fun apply (Lorg/gradle/api/Project;)V
