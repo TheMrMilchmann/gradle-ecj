@@ -121,14 +121,20 @@ tasks {
          * default if we're in CI.
          *
          * See https://github.com/TheMrMilchmann/gradle-ecj/issues/11
+         * See https://github.com/gradle/gradle/issues/12247
          */
         val defaultExecutionMode = providers.environmentVariable("CI")
             .map(String::toBoolean)
             .orElse(false)
             .map { if (it) "same_thread" else "concurrent" }
 
+        inputs.property("junit.jupiter.execution.parallel.mode.default", defaultExecutionMode)
+
         systemProperty("junit.jupiter.execution.parallel.enabled", true)
-        systemProperty("junit.jupiter.execution.parallel.mode.default", defaultExecutionMode)
+
+        doFirst {
+            systemProperty("junit.jupiter.execution.parallel.mode.default", defaultExecutionMode.get())
+        }
     }
 }
 
