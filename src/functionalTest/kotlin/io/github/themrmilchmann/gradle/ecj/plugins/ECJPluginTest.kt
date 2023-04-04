@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
+import java.io.PrintWriter
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
@@ -177,7 +178,8 @@ class ECJPluginTest {
             .withGradleVersion(gradleVersion)
             .withPluginClasspath()
             .withProjectDir(projectDir.toFile())
-            .forwardOutput()
+            .forwardStdError(PrintWriter(System.err))
+            .forwardStdOutput(PrintWriter(System.out))
             .build()
 
     private fun writeSettingsFile(gradleVersion: String) {
