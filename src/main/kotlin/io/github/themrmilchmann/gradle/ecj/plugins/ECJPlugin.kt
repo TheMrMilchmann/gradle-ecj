@@ -91,7 +91,8 @@ public class ECJPlugin : Plugin<Project> {
                  * Overwrite the javaCompiler to make sure that it is not inferred from the toolchain.
                  *
                  * On Gradle 7.x, we cannot simply change the executable to point to the appropriate one if
-                 * `javaCompiler` is set. To work around this, we safe
+                 * `javaCompiler` is set. To work around this, we set `javaCompiler` to `null` and configure the
+                 * executable later.
                  *
                  * However, we still have to register this provider as task input for proper incremental builds.
                  * Unfortunately, it is not possible to replicate the functionality of @Nested for programmatically
