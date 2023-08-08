@@ -111,39 +111,6 @@ class ECJPluginTest {
         assertEquals(TaskOutcome.UP_TO_DATE, buildResult.task(":compileJava")?.outcome)
     }
 
-    @Test
-    fun `Run without project toolchain 2`() {
-        writeSettingsFile("8.1")
-        writeSourceFile()
-
-        buildFile.writeText(
-            """
-            plugins {
-                id 'java-library'
-                id 'io.github.themrmilchmann.ecj'
-            }
-            
-            java {
-                toolchain {
-                    languageVersion = JavaLanguageVersion.of(11)
-                }
-            }
-            
-            repositories {
-                mavenCentral()
-            }
-            """.trimIndent()
-        )
-
-        var buildResult = runCustomGradleBuild()
-        assertEquals(TaskOutcome.SUCCESS, buildResult.task(":compileJava")?.outcome)
-//        assertTrue(buildResult.output.contains("Compiling with Java command line compiler '.+[/\\\\]bin[/\\\\]java(.exe)?'.".toRegex()))
-
-        // Test up-to-date checks
-        buildResult = runCustomGradleBuild()
-        assertEquals(TaskOutcome.UP_TO_DATE, buildResult.task(":compileJava")?.outcome)
-    }
-
     @ParameterizedTest
     @MethodSource("provideGradleVersions")
     fun `Run with compatible project toolchain`(gradleVersion: String) {
@@ -216,16 +183,6 @@ class ECJPluginTest {
         GradleRunner.create()
             .withArguments("build", "--info")
             .withGradleVersion(gradleVersion)
-            .withPluginClasspath()
-            .withProjectDir(projectDir.toFile())
-            .forwardStdError(PrintWriter(System.err))
-            .forwardStdOutput(PrintWriter(System.out))
-            .build()
-
-    private fun runCustomGradleBuild(): BuildResult =
-        GradleRunner.create()
-            .withArguments("build", "--debug", "-S")
-            .withGradleInstallation(File("./tmp"))
             .withPluginClasspath()
             .withProjectDir(projectDir.toFile())
             .forwardStdError(PrintWriter(System.err))
