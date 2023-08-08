@@ -26,9 +26,11 @@ import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
+import java.io.File
 import java.io.PrintWriter
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
@@ -44,6 +46,9 @@ class ECJPluginTest {
             // See https://docs.gradle.org/current/userguide/compatibility.html
             val javaVersion = JavaVersion.current()
 
+            add("8.2.1")
+            add("8.2")
+            add("8.1.1")
             add("8.1")
             add("8.0.2")
             /*
@@ -52,6 +57,7 @@ class ECJPluginTest {
              *
              * See https://github.com/gradle/gradle/issues/23990
              */
+            add("7.6.2")
             add("7.6.1")
             add("7.6")
 
@@ -102,6 +108,39 @@ class ECJPluginTest {
 
         // Test up-to-date checks
         buildResult = runGradleBuild(gradleVersion)
+        assertEquals(TaskOutcome.UP_TO_DATE, buildResult.task(":compileJava")?.outcome)
+    }
+
+    @Test
+    fun `Run without project toolchain 2`() {
+        writeSettingsFile("8.1")
+        writeSourceFile()
+
+        buildFile.writeText(
+            """
+            plugins {
+                id 'java-library'
+                id 'io.github.themrmilchmann.ecj'
+            }
+            
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(11)
+                }
+            }
+            
+            repositories {
+                mavenCentral()
+            }
+            """.trimIndent()
+        )
+
+        var buildResult = runCustomGradleBuild()
+        assertEquals(TaskOutcome.SUCCESS, buildResult.task(":compileJava")?.outcome)
+//        assertTrue(buildResult.output.contains("Compiling with Java command line compiler '.+[/\\\\]bin[/\\\\]java(.exe)?'.".toRegex()))
+
+        // Test up-to-date checks
+        buildResult = runCustomGradleBuild()
         assertEquals(TaskOutcome.UP_TO_DATE, buildResult.task(":compileJava")?.outcome)
     }
 
@@ -177,6 +216,16 @@ class ECJPluginTest {
         GradleRunner.create()
             .withArguments("build", "--info")
             .withGradleVersion(gradleVersion)
+            .withPluginClasspath()
+            .withProjectDir(projectDir.toFile())
+            .forwardStdError(PrintWriter(System.err))
+            .forwardStdOutput(PrintWriter(System.out))
+            .build()
+
+    private fun runCustomGradleBuild(): BuildResult =
+        GradleRunner.create()
+            .withArguments("build", "--debug", "-S")
+            .withGradleInstallation(File("./tmp"))
             .withPluginClasspath()
             .withProjectDir(projectDir.toFile())
             .forwardStdError(PrintWriter(System.err))
