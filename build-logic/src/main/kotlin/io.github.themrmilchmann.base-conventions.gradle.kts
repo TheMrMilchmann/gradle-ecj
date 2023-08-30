@@ -19,17 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import io.github.themrmilchmann.build.*
-import io.github.themrmilchmann.build.BuildType
-
-group = "io.github.themrmilchmann.gradle.ecj"
-
-val nextVersion = "0.3.0"
-version = when (deployment.type) {
-    BuildType.SNAPSHOT -> "$nextVersion-SNAPSHOT"
-    else -> nextVersion
-}
-
 repositories {
     mavenCentral()
 }
