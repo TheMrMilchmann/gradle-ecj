@@ -6,7 +6,7 @@ on:
 
 
 env:
-  JDK_VERSION: "19"
+  JDK_VERSION: "20"
   WORKSPACE_ARCHIVE: workspace.tar
   WORKSPACE_ARTIFACT: build-results
 
@@ -46,7 +46,7 @@ jobs:
     name: Check
     strategy:
       matrix:
-        jdk: [ 8, 11, 17, 19 ]
+        jdk: [ 8, 11, 17, 20 ]
         os: [ macos-latest, ubuntu-latest, windows-latest ]
     needs: build
     runs-on: ${{ matrix.os }}
