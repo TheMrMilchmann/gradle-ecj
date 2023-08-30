@@ -115,24 +115,22 @@ tasks {
         }))
 
         /*
-         * The tests are extremely memory-intensive which causes spurious CI
-         * failures. To work around this, we don't enable parallel execution by
-         * default if we're in CI.
+         * Fully disable parallel execution on CI to avoid running into memory
+         * limits on GitHub Actions.
          *
          * See https://github.com/TheMrMilchmann/gradle-ecj/issues/11
          * See https://github.com/gradle/gradle/issues/12247
          */
-        val defaultExecutionMode = providers.environmentVariable("CI")
-            .map(String::toBoolean)
-            .orElse(false)
-            .map { if (it) "same_thread" else "concurrent" }
+        val parallelExecution = providers.environmentVariable("CI")
+            .map { !it.toBoolean() }
+            .orElse(true)
 
-        inputs.property("junit.jupiter.execution.parallel.mode.default", defaultExecutionMode)
+        inputs.property("junit.jupiter.execution.parallel.enabled", parallelExecution)
 
-        systemProperty("junit.jupiter.execution.parallel.enabled", true)
+        systemProperty("junit.jupiter.execution.parallel.mode.default", "concurrent")
 
         doFirst {
-            systemProperty("junit.jupiter.execution.parallel.mode.default", defaultExecutionMode.get())
+            systemProperty("junit.jupiter.execution.parallel.enabled", parallelExecution.get())
         }
     }
 }
