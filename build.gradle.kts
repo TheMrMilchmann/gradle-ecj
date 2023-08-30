@@ -136,7 +136,7 @@ tasks {
 }
 
 val emptyJar = tasks.register<Jar>("emptyJar") {
-    destinationDirectory.set(buildDir.resolve("emptyJar"))
+    destinationDirectory.set(layout.buildDirectory.dir("emptyJar"))
     archiveBaseName.set("io.github.themrmilchmann.ecj.gradle.plugin")
 }
 
