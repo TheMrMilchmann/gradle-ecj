@@ -80,7 +80,7 @@ gradlePlugin {
     vcsUrl = "https://github.com/TheMrMilchmann/gradle-ecj.git"
 
     plugins {
-        create("ecj") {
+        register("ecj") {
             id = "io.github.themrmilchmann.ecj"
             displayName = "Gradle Eclipse Compiler for Java Plugin"
             description = "A Gradle plugin for using the Eclipse Compiler for Java (ECJ) for compiling Java files"
