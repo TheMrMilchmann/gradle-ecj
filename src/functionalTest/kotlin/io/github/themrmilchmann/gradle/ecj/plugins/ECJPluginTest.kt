@@ -44,6 +44,7 @@ class ECJPluginTest {
             // See https://docs.gradle.org/current/userguide/compatibility.html
             val javaVersion = JavaVersion.current()
 
+            add("8.4")
             add("8.3")
 
             @Suppress("UnstableApiUsage")
