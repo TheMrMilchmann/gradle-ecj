@@ -47,7 +47,7 @@ jobs:
     name: Check
     strategy:
       matrix:
-        jdk: [ 8, 11, 17, 20 ]
+        jdk: [ 8, 11, 17, 21 ]
         os: [ macos-latest, ubuntu-latest, windows-latest ]
     needs: build
     runs-on: ${{ matrix.os }}
