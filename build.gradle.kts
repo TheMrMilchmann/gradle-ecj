@@ -151,8 +151,6 @@ publishing {
         pom {
             name = "Gradle Eclipse Compiler for Java Plugin"
             description = "A Gradle plugin for using the Eclipse Compiler for Java (ECJ) for compiling Java files"
-
-            packaging = "jar"
         }
     }
 }

@@ -47,6 +47,7 @@ publishing {
         pom {
             name = project.name
             url = "https://github.com/TheMrMilchmann/gradle-ecj"
+            packaging = "jar"
 
             licenses {
                 licenses {
