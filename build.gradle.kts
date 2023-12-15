@@ -133,6 +133,13 @@ tasks {
             systemProperty("junit.jupiter.execution.parallel.enabled", parallelExecution.get())
         }
     }
+
+    withType<Jar>().configureEach {
+        isPreserveFileTimestamps = false
+        isReproducibleFileOrder = true
+
+        includeEmptyDirs = false
+    }
 }
 
 val emptyJar = tasks.register<Jar>("emptyJar") {
