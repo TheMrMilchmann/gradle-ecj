@@ -17,7 +17,7 @@ This plugin is loosely based on [Niklas Walter's Gradle Eclipse Compiler for Jav
 
 ```groovy
 plugins {
-  id "io.github.themrmilchmann.ecj" version "0.2.0"
+    id "io.github.themrmilchmann.ecj" version "0.2.0"
 }
 ```
 
@@ -36,9 +36,9 @@ dependencies {
 
 ```groovy
 ecj {
-  compilerGroupId = "org.eclipse.jdt"
-  compilerArtifactId = "ecj"
-  compilerVersion = "3.32.0"
+    compilerGroupId = "org.eclipse.jdt"
+    compilerArtifactId = "ecj"
+    compilerVersion = "3.32.0"
 }
 ```
 
@@ -67,9 +67,9 @@ dependencies {
 
 ```kotlin
 ecj {
-  compilerGroupId.set("org.eclipse.jdt")
-  compilerArtifactId.set("ecj")
-  compilerVersion.set("3.32.0")
+    compilerGroupId.set("org.eclipse.jdt")
+    compilerArtifactId.set("ecj")
+    compilerVersion.set("3.32.0")
 }
 ```
 
