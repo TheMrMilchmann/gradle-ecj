@@ -222,9 +222,10 @@ jobs:
     if: ${{ always() }}
     needs: [gpp-release, nexus-release]
     runs-on: ubuntu-latest
+    permissions:
+      actions: write
     steps:
       - name: Cleanup
-        uses: GeekyEggo/delete-artifact@9d15d164b1dcd538ff1b1a2984bc2c0240986c3b
+        uses: GeekyEggo/delete-artifact@65041433121f7239077fa20be14c0690f70569de
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           name: ${{ env.WORKSPACE_ARTIFACT }}
