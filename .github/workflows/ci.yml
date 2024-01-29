@@ -15,6 +15,9 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
 
@@ -53,6 +56,9 @@ jobs:
         os: [ macos-latest, ubuntu-latest, windows-latest ]
     needs: build
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Checkout
         uses: actions/download-artifact@v4

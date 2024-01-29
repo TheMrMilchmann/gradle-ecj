@@ -16,6 +16,9 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
 
@@ -54,6 +57,9 @@ jobs:
         os: [ macos-latest, ubuntu-latest, windows-latest ]
     needs: build
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Checkout
         uses: actions/download-artifact@v4
@@ -81,6 +87,7 @@ jobs:
           gradle-home-cache-cleanup: true
 
       - name: Gradle Check
+        shell: bash
         run: ./gradlew check --info -S --show-version -Ptoolchain.functionalTest.version=${{ matrix.jdk }}
 
 
@@ -107,6 +114,9 @@ jobs:
     needs: create-staging-repository
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Checkout
         uses: actions/download-artifact@v4
@@ -160,6 +170,9 @@ jobs:
     needs: close-staging-repository
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Checkout
         uses: actions/download-artifact@v4
