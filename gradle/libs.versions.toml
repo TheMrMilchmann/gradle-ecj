@@ -3,7 +3,7 @@ binary-compatibility-validator = "0.14.0"
 gradle-toolchain-switches = "0.3.0"
 junit = "5.10.1"
 kotlin = "1.9.22"
-nokee-gradle-plugin-dev = "1.6.9"
+nokee-gradle-plugin-dev = "1.6.10"
 plugin-publish = "1.2.1"
 
 
