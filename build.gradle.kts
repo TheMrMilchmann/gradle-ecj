@@ -111,7 +111,7 @@ tasks {
 
         @OptIn(ExperimentalToolchainSwitchesApi::class)
         javaLauncher.set(inferLauncher(default = project.javaToolchains.launcherFor {
-            languageVersion = JavaLanguageVersion.of(8)
+            languageVersion = JavaLanguageVersion.of(23)
         }))
 
         /*
@@ -169,5 +169,6 @@ dependencies {
     functionalTestImplementation(platform(buildDeps.junit.bom))
     functionalTestImplementation(buildDeps.junit.jupiter.api)
     functionalTestImplementation(buildDeps.junit.jupiter.params)
+    functionalTestImplementation("dev.gradleplugins:gradle-test-kit:7.6.4")
     functionalTestRuntimeOnly(buildDeps.junit.jupiter.engine)
 }
