@@ -45,11 +45,11 @@ class ECJPluginTest {
             val javaVersion = JavaVersion.current()
 
             add("8.12")
+            add("8.11.1")
+            add("8.10.2")
 
             if (javaVersion.majorVersion >= "23") return@buildList
 
-            add("8.11.1")
-            add("8.10.2")
             add("8.10")
             add("8.9")
             add("8.8")
