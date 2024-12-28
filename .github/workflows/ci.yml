@@ -54,6 +54,9 @@ jobs:
       matrix:
         jdk: [ 8, 11, 17, 21, 23 ]
         os: [ macos-latest, ubuntu-latest, windows-latest ]
+        exclude:
+          - jdk: 8
+            os: macos-latest
     needs: build
     runs-on: ${{ matrix.os }}
     defaults:
@@ -72,6 +75,7 @@ jobs:
           rm ${{ env.WORKSPACE_ARCHIVE }}
 
       - name: Setup Java
+        if: ${{ matrix.os != 'macos-latest' }}
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
@@ -79,6 +83,18 @@ jobs:
             8
             11
             17
+            21
+            ${{ env.JDK_VERSION }}
+
+      - name: Setup Java
+        if: ${{ matrix.os == 'macos-latest' }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: |
+            11
+            17
+            21
             ${{ env.JDK_VERSION }}
 
       - name: Setup Gradle
