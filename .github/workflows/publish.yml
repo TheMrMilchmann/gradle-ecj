@@ -5,6 +5,8 @@ on:
       environment:
         description: The environment to publish to
         type: environment
+permissions:
+  contents: read
 
 env:
   JDK_VERSION: "23"
