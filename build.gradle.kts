@@ -27,12 +27,12 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(buildDeps.plugins.binary.compatibility.validator)
-    alias(buildDeps.plugins.gradle.plugin.functional.test)
     alias(buildDeps.plugins.gradle.toolchain.switches)
     alias(buildDeps.plugins.kotlin.jvm)
     alias(buildDeps.plugins.kotlin.plugin.samwithreceiver)
     alias(buildDeps.plugins.plugin.publish)
     id("io.github.themrmilchmann.maven-publish-conventions")
+    `jvm-test-suite`
 }
 
 java {
@@ -47,35 +47,17 @@ java {
 kotlin {
     explicitApi()
 
-    target {
-        compilations.all {
-            compilerOptions.configure {
-                apiVersion = KotlinVersion.KOTLIN_1_8
-                languageVersion = KotlinVersion.KOTLIN_1_8
-            }
-        }
+    compilerOptions {
+        apiVersion = KotlinVersion.KOTLIN_2_2
+        languageVersion = KotlinVersion.KOTLIN_2_2
 
-        compilations.named("main").configure {
-            compilerOptions.configure {
-                @Suppress("DEPRECATION")
-                apiVersion = KotlinVersion.KOTLIN_1_4
+        jvmTarget = JvmTarget.JVM_17
 
-                /*
-                 * 1.4 is deprecated, but we need it to stay compatible with old
-                 * Gradle versions anyway. Thus, we suppress the compiler's
-                 * warning.
-                 */
-                freeCompilerArgs.add("-Xsuppress-version-warnings")
-            }
-        }
+        freeCompilerArgs.add("-Xjdk-release=17")
     }
 }
 
 gradlePlugin {
-    compatibility {
-        minimumGradleVersion = "7.4"
-    }
-
     website = "https://github.com/TheMrMilchmann/gradle-ecj"
     vcsUrl = "https://github.com/TheMrMilchmann/gradle-ecj.git"
 
@@ -95,15 +77,41 @@ samWithReceiver {
     annotation("org.gradle.api.HasImplicitReceiver")
 }
 
+@Suppress("UnstableApiUsage")
+testing {
+    suites {
+        withType<JvmTestSuite>().configureEach {
+            useJUnitJupiter()
+
+            dependencies {
+                implementation(platform(buildDeps.junit.bom))
+                implementation(buildDeps.junit.jupiter.api)
+                implementation(buildDeps.junit.jupiter.params)
+                runtimeOnly(buildDeps.junit.jupiter.engine)
+                runtimeOnly(buildDeps.junit.platform.launcher)
+            }
+        }
+
+        val test by getting
+
+        register<JvmTestSuite>("functionalTest") {
+            dependencies {
+                implementation(gradleTestKit())
+                runtimeOnly(layout.files(tasks.named("pluginUnderTestMetadata")))
+            }
+
+            targets.configureEach {
+                testTask.configure {
+                    shouldRunAfter(test)
+                }
+            }
+        }
+    }
+}
+
 tasks {
     withType<JavaCompile>().configureEach {
-        options.release = 8
-    }
-
-    withType<KotlinCompile>().configureEach {
-        compilerOptions {
-            jvmTarget = JvmTarget.JVM_1_8
-        }
+        options.release = 17
     }
 
     withType<Test>().configureEach {
@@ -111,7 +119,7 @@ tasks {
 
         @OptIn(ExperimentalToolchainSwitchesApi::class)
         javaLauncher.set(inferLauncher(default = project.javaToolchains.launcherFor {
-            languageVersion = JavaLanguageVersion.of(23)
+            languageVersion = JavaLanguageVersion.of(17)
         }))
 
         /*
@@ -133,28 +141,10 @@ tasks {
             systemProperty("junit.jupiter.execution.parallel.enabled", parallelExecution.get())
         }
     }
-
-    withType<Jar>().configureEach {
-        isPreserveFileTimestamps = false
-        isReproducibleFileOrder = true
-
-        includeEmptyDirs = false
-    }
-}
-
-val emptyJar = tasks.register<Jar>("emptyJar") {
-    destinationDirectory = layout.buildDirectory.dir("emptyJar")
-    archiveBaseName = "io.github.themrmilchmann.ecj.gradle.plugin"
 }
 
 publishing {
     publications.withType<MavenPublication>().configureEach {
-        if (name == "ecjPluginMarkerMaven") {
-            artifact(emptyJar)
-            artifact(emptyJar) { classifier = "javadoc" }
-            artifact(emptyJar) { classifier = "sources" }
-        }
-
         pom {
             name = "Gradle Eclipse Compiler for Java Plugin"
             description = "A Gradle plugin for using the Eclipse Compiler for Java (ECJ) for compiling Java files"
@@ -164,11 +154,10 @@ publishing {
 
 dependencies {
     compileOnlyApi(kotlin("stdlib"))
-
-    functionalTestImplementation(kotlin("stdlib"))
-    functionalTestImplementation(platform(buildDeps.junit.bom))
-    functionalTestImplementation(buildDeps.junit.jupiter.api)
-    functionalTestImplementation(buildDeps.junit.jupiter.params)
-    functionalTestImplementation("dev.gradleplugins:gradle-test-kit:7.6.4")
-    functionalTestRuntimeOnly(buildDeps.junit.jupiter.engine)
+    compileOnlyApi(libs.gradle.api) {
+        capabilities {
+            // https://github.com/gradle/gradle/issues/29483
+            requireCapability("org.gradle.experimental:gradle-public-api-internal")
+        }
+    }
 }

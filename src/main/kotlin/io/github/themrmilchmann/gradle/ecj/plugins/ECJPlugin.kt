@@ -28,6 +28,7 @@ import io.github.themrmilchmann.gradle.ecj.ECJConstants.REQUIRED_JAVA_VERSION
 import io.github.themrmilchmann.gradle.ecj.ECJExtension
 import io.github.themrmilchmann.gradle.ecj.internal.utils.*
 import org.gradle.api.*
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.*
 import org.gradle.api.tasks.Classpath
@@ -73,65 +74,77 @@ public class ECJPlugin : Plugin<Project> {
             /* ECJ does not support generating JNI headers. Make sure the property is not used. */
             options.headerOutputDirectory.set(provider { null })
 
-            options.isFork = true
-            options.forkOptions.jvmArgumentProviders.add(ECJCommandLineArgumentProvider(ecjConfiguration))
-
-            val defaultJavaCompiler = provider {
-                if (java.toolchain.languageVersion.orNull?.canCompileOrRun(REQUIRED_JAVA_VERSION) == true) {
-                    javaToolchains.compilerFor(java.toolchain).orNull ?: error("Could not get launcher for toolchain: ${java.toolchain}")
-                } else {
-                    javaToolchains.compilerFor {
-                        languageVersion.set(JavaLanguageVersion.of(PREFERRED_JAVA_VERSION))
-                    }.orNull ?: error("Could not provision launcher for Java $PREFERRED_JAVA_VERSION")
-                }
+            // public abstract ConfigurableFileCollection getCustomCompilerClasspath();
+            val methodGetCustomCompilerClasspath = try {
+                this::class.java.getMethod("getCustomCompilerClasspath")
+            } catch (_: NoSuchMethodException) {
+                null
             }
 
-            if (GradleVersion.current() < GRADLE_8_0) {
-                /*
-                 * Overwrite the javaCompiler to make sure that it is not inferred from the toolchain.
-                 *
-                 * On Gradle 7.x, we cannot simply change the executable to point to the appropriate one if
-                 * `javaCompiler` is set. To work around this, we set `javaCompiler` to `null` and configure the
-                 * executable later.
-                 *
-                 * However, we still have to register this provider as task input for proper incremental builds.
-                 * Unfortunately, it is not possible to replicate the functionality of @Nested for programmatically
-                 * defined task inputs. Hence, we can only use the languageVersion for now. This could lead to some
-                 * undesired cache hits but the chance should be low and there is very little risk of this being an
-                 * issue.
-                 */
-                javaCompiler.set(provider { null })
-                inputs.property("javaLauncher", defaultJavaCompiler.map { it.metadata.languageVersion.asInt() })
+            if (methodGetCustomCompilerClasspath != null) {
+                val customCompilerClasspath = methodGetCustomCompilerClasspath.invoke(this) as ConfigurableFileCollection
+                customCompilerClasspath.from(ecjConfiguration)
             } else {
-                /*
-                 * On Gradle 8.0.2+, we can set the `javaCompiler` of the task and change the executable to point to
-                 * another toolchain tool. Because we are just using `java` instead of `javac` from the same toolchain,
-                 * we don't have to fiddle with incremental build support here.
-                 *
-                 * See https://github.com/gradle/gradle/issues/23990
-                 */
-                this.javaCompiler.convention(defaultJavaCompiler)
-            }
+                options.isFork = true
+                options.forkOptions.jvmArgumentProviders.add(ECJCommandLineArgumentProvider(ecjConfiguration))
 
-            /* See https://docs.gradle.org/7.4.2/userguide/validation_problems.html#implementation_unknown */
-            @Suppress("ObjectLiteralToLambda")
-            doFirst(object : Action<Task> {
-                override fun execute(t: Task) {
-                    /*
-                     * On Gradle 7.x, `javaCompiler` will have no value. In this case, we resolve `defaultJavaCompiler`
-                     * and use its path. On Gradle 8.x, we can just `javaCompiler`.
-                     */
-                    val javacExecutable = javaCompiler.orElse(defaultJavaCompiler).get().executablePath.asFile
-
-                    /*
-                     * We replace the "javac" part of the original executable name instead of simply resolving "java" to
-                     * account for file extensions.
-                     */
-                    val javaExecutable = javacExecutable.resolveSibling(javacExecutable.name.replace("javac", "java"))
-
-                    options.forkOptions.executable = javaExecutable.absolutePath
+                val defaultJavaCompiler = provider {
+                    if (java.toolchain.languageVersion.orNull?.canCompileOrRun(REQUIRED_JAVA_VERSION) == true) {
+                        javaToolchains.compilerFor(java.toolchain).orNull ?: error("Could not get launcher for toolchain: ${java.toolchain}")
+                    } else {
+                        javaToolchains.compilerFor {
+                            languageVersion.set(JavaLanguageVersion.of(PREFERRED_JAVA_VERSION))
+                        }.orNull ?: error("Could not provision launcher for Java $PREFERRED_JAVA_VERSION")
+                    }
                 }
-            })
+
+                if (GradleVersion.current() < GRADLE_8_0) {
+                    /*
+                     * Overwrite the javaCompiler to make sure that it is not inferred from the toolchain.
+                     *
+                     * On Gradle 7.x, we cannot simply change the executable to point to the appropriate one if
+                     * `javaCompiler` is set. To work around this, we set `javaCompiler` to `null` and configure the
+                     * executable later.
+                     *
+                     * However, we still have to register this provider as task input for proper incremental builds.
+                     * Unfortunately, it is not possible to replicate the functionality of @Nested for programmatically
+                     * defined task inputs. Hence, we can only use the languageVersion for now. This could lead to some
+                     * undesired cache hits but the chance should be low and there is very little risk of this being an
+                     * issue.
+                     */
+                    javaCompiler.set(provider { null })
+                    inputs.property("javaLauncher", defaultJavaCompiler.map { it.metadata.languageVersion.asInt() })
+                } else {
+                    /*
+                     * On Gradle 8.0.2+, we can set the `javaCompiler` of the task and change the executable to point to
+                     * another toolchain tool. Because we are just using `java` instead of `javac` from the same toolchain,
+                     * we don't have to fiddle with incremental build support here.
+                     *
+                     * See https://github.com/gradle/gradle/issues/23990
+                     */
+                    this.javaCompiler.convention(defaultJavaCompiler)
+                }
+
+                /* See https://docs.gradle.org/7.4.2/userguide/validation_problems.html#implementation_unknown */
+                @Suppress("ObjectLiteralToLambda")
+                doFirst(object : Action<Task> {
+                    override fun execute(t: Task) {
+                        /*
+                         * On Gradle 7.x, `javaCompiler` will have no value. In this case, we resolve `defaultJavaCompiler`
+                         * and use its path. On Gradle 8.x, we can just `javaCompiler`.
+                         */
+                        val javacExecutable = javaCompiler.orElse(defaultJavaCompiler).get().executablePath.asFile
+
+                        /*
+                         * We replace the "javac" part of the original executable name instead of simply resolving "java" to
+                         * account for file extensions.
+                         */
+                        val javaExecutable = javacExecutable.resolveSibling(javacExecutable.name.replace("javac", "java"))
+
+                        options.forkOptions.executable = javaExecutable.absolutePath
+                    }
+                })
+            }
         }
     }
 

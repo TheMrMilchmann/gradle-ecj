@@ -21,7 +21,6 @@
  */
 package io.github.themrmilchmann.gradle.ecj.plugins
 
-import org.gradle.api.JavaVersion
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
@@ -34,7 +33,6 @@ import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
 
-@Suppress("FunctionName")
 class ECJPluginTest {
 
     private companion object {
@@ -42,46 +40,9 @@ class ECJPluginTest {
         @JvmStatic
         private fun provideGradleVersions(): List<String> = buildList {
             // See https://docs.gradle.org/current/userguide/compatibility.html
-            val javaVersion = JavaVersion.current()
+            // val javaVersion = JavaVersion.current()
 
-            add("8.12")
-            add("8.11.1")
-            add("8.10.2")
-
-            if (javaVersion.majorVersion >= "23") return@buildList
-
-            add("8.10")
-            add("8.9")
-            add("8.8")
-            add("8.7")
-
-            if (javaVersion.majorVersion >= "22") return@buildList
-
-            add("8.6")
-            add("8.5")
-
-            if (javaVersion.majorVersion >= "21") return@buildList
-
-            add("8.4")
-            add("8.3")
-
-            @Suppress("UnstableApiUsage")
-            if (javaVersion >= JavaVersion.VERSION_20) return@buildList
-
-            add("8.2.1")
-            add("8.1.1")
-            add("8.0.2")
-            add("7.6.4")
-
-            @Suppress("UnstableApiUsage")
-            if (javaVersion >= JavaVersion.VERSION_19) return@buildList
-
-            add("7.5.1")
-
-            @Suppress("UnstableApiUsage")
-            if (javaVersion >= JavaVersion.VERSION_18) return@buildList
-
-            add("7.4.2")
+            add("9.0.0")
         }
 
     }
@@ -205,7 +166,7 @@ class ECJPluginTest {
             """
             pluginManagement {
                 plugins {
-                    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.4.0'
+                    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
                 }
             }
             

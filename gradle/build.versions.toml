@@ -2,32 +2,33 @@
 binary-compatibility-validator = "0.18.1"
 gradle-toolchain-switches = "0.3.0"
 junit = "5.13.4"
-kotlin = "1.9.25"
-nokee-gradle-plugin-dev = "1.6.10"
+kotlin = "2.2.20"
 plugin-publish = "2.0.0"
 
 
 [libraries]
 # org.junit - JUnit
+# https://github.com/junit-team/junit-framework
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 
 
 [plugins]
 # com.gradle.plugin-publish - plugin-publish
 plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }
 
-# dev.gradleplugins - Nokee Gradle Plugin Development Plugins
-gradle-plugin-functional-test = { id = "dev.gradleplugins.gradle-plugin-functional-test", version.ref = "nokee-gradle-plugin-dev" }
-
-# io.github.themrmilchmann.toolchain-switches - Gradle Toolchain Switches Plugin
+# io.github.themrmilchmann.gradle.toolchainswitches:gradle-toolchain-switches - Gradle Toolchain Switches Plugin
+# https://github.com/TheMrMilchmann/gradle-toolchain-switches
 gradle-toolchain-switches = { id = "io.github.themrmilchmann.toolchain-switches", version.ref = "gradle-toolchain-switches" }
 
 # org.jetbrains.kotlinx.binary-compatibility-validator - binary-compatibility-validator
+# https://github.com/Kotlin/binary-compatibility-validator
 binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility-validator" }
 
 # org.jetbrains.kotlin - Kotlin
+# https://github.com/JetBrains/kotlin
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-plugin-samwithreceiver = { id = "org.jetbrains.kotlin.plugin.sam.with.receiver", version.ref = "kotlin" }

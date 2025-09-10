@@ -3,8 +3,8 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge&label=License)](https://github.com/TheMrMilchmann/gradle-ecj/blob/master/LICENSE)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.themrmilchmann.gradle.ecj/gradle-ecj.svg?style=for-the-badge&label=Maven%20Central)](https://maven-badges.herokuapp.com/maven-central/io.github.themrmilchmann.gradle.ecj/gradle-ecj)
 [![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v.svg?style=for-the-badge&&label=Gradle%20Plugin%20Portal&logo=Gradle&metadataUrl=https%3A%2F%2Fplugins.gradle.org%2Fm2%2Fio%2Fgithub%2Fthemrmilchmann%2Fecj%2Fio.github.themrmilchmann.ecj.gradle.plugin%2Fmaven-metadata.xml)](https://plugins.gradle.org/plugin/io.github.themrmilchmann.ecj)
-![Gradle](https://img.shields.io/badge/Gradle-7.4-green.svg?style=for-the-badge&color=1ba8cb&logo=Gradle)
-![Java](https://img.shields.io/badge/Java-8-green.svg?style=for-the-badge&color=b07219&logo=Java)
+![Gradle](https://img.shields.io/badge/Gradle-9.0.0-green.svg?style=for-the-badge&color=1ba8cb&logo=Gradle)
+![Java](https://img.shields.io/badge/Java-17-green.svg?style=for-the-badge&color=b07219&logo=Java)
 
 A Gradle plugin for using the Eclipse Compiler for Java (ECJ) for compiling Java files.
 

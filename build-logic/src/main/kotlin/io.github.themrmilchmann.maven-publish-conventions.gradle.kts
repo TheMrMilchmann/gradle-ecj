@@ -20,34 +20,15 @@
  * SOFTWARE.
  */
 plugins {
-    id("io.github.themrmilchmann.base-conventions")
     `maven-publish`
     signing
 }
 
 publishing {
-    repositories {
-        val sonatypeBaseUrl: String? by project
-        val sonatypeUsername: String? by project
-        val sonatypePassword: String? by project
-        val stagingRepositoryId: String? by project
-
-        if (sonatypeBaseUrl != null && sonatypeUsername != null && sonatypePassword != null && stagingRepositoryId != null) {
-            maven {
-                url = uri("$sonatypeBaseUrl/service/local/staging/deployByRepositoryId/$stagingRepositoryId/")
-
-                credentials {
-                    username = sonatypeUsername
-                    password = sonatypePassword
-                }
-            }
-        }
-    }
     publications.withType<MavenPublication>().configureEach {
         pom {
             name = project.name
             url = "https://github.com/TheMrMilchmann/gradle-ecj"
-            packaging = "jar"
 
             licenses {
                 licenses {
