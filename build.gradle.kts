@@ -169,6 +169,6 @@ dependencies {
     functionalTestImplementation(platform(buildDeps.junit.bom))
     functionalTestImplementation(buildDeps.junit.jupiter.api)
     functionalTestImplementation(buildDeps.junit.jupiter.params)
-    functionalTestImplementation("dev.gradleplugins:gradle-test-kit:7.6.4")
+    functionalTestImplementation("dev.gradleplugins:gradle-test-kit:8.11.1")
     functionalTestRuntimeOnly(buildDeps.junit.jupiter.engine)
 }
