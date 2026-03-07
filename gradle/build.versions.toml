@@ -3,7 +3,7 @@ binary-compatibility-validator = "0.18.1"
 gradle-toolchain-switches = "0.3.0"
 junit = "6.0.3"
 kotlin = "2.3.10"
-plugin-publish = "2.0.0"
+plugin-publish = "2.1.0"
 
 
 [libraries]
