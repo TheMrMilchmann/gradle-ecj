@@ -21,9 +21,9 @@
  */
 import io.github.themrmilchmann.gradle.toolchainswitches.ExperimentalToolchainSwitchesApi
 import io.github.themrmilchmann.gradle.toolchainswitches.inferLauncher
+import org.gradle.plugin.compatibility.compatibility
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(buildDeps.plugins.binary.compatibility.validator)
@@ -69,6 +69,13 @@ gradlePlugin {
             tags.addAll("compile", "ecj", "eclipse compiler for java", "java")
 
             implementationClass = "io.github.themrmilchmann.gradle.ecj.plugins.ECJPlugin"
+
+            @Suppress("UnstableApiUsage")
+            compatibility {
+                features {
+                    configurationCache = true
+                }
+            }
         }
     }
 }
