@@ -1,7 +1,7 @@
 [versions]
 binary-compatibility-validator = "0.18.1"
 gradle-toolchain-switches = "0.3.0"
-junit = "6.0.3"
+junit = "6.1.0"
 kotlin = "2.3.21"
 plugin-publish = "2.1.1"
 
