@@ -48,3 +48,13 @@ jobs:
       - name: Gradle Check
         shell: bash
         run: ./gradlew check --info -S --show-version -Ptoolchain.functionalTest.version=${{ matrix.jdk }}
+
+  status:
+    name: Status
+    if: always()
+    needs: [ check ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine overall status
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: exit 1
